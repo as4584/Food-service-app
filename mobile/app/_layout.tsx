@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -17,9 +17,14 @@ import {
   Inter_800ExtraBold,
 } from "@expo-google-fonts/inter";
 import { CartProvider } from "../context/CartContext";
+import { BrandLoadingScreen } from "../components/BrandLoadingScreen";
 import { COLORS, FONTS } from "../theme/tokens";
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
+
+// Minimum time the branded loading screen stays up once fonts are ready, so it
+// reads as an intentional brand moment rather than a flash on fast devices.
+const MIN_BRAND_MS = 1900;
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -33,10 +38,23 @@ export default function RootLayout() {
     Inter_800ExtraBold,
   });
 
+  const [brandDone, setBrandDone] = useState(false);
+
+  useEffect(() => {
+    if (!fontsLoaded) return;
+    // Fonts are ready — hand off from the native splash to the in-app branded
+    // loading screen, then reveal the app after a short beat.
+    SplashScreen.hideAsync().catch(() => {});
+    const timer = setTimeout(() => setBrandDone(true), MIN_BRAND_MS);
+    return () => clearTimeout(timer);
+  }, [fontsLoaded]);
+
   const onLayout = useCallback(() => {
     if (fontsLoaded) SplashScreen.hideAsync().catch(() => {});
   }, [fontsLoaded]);
 
+  // Keep the native splash (cream) up until custom fonts are ready so the
+  // branded loading screen renders with the correct typography.
   if (!fontsLoaded) return null;
 
   return (
@@ -62,6 +80,7 @@ export default function RootLayout() {
             options={{ title: "Order Status", headerBackVisible: false }}
           />
         </Stack>
+        {!brandDone && <BrandLoadingScreen />}
       </CartProvider>
     </SafeAreaProvider>
   );

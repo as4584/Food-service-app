@@ -1,3 +1,16 @@
+/**
+ * NJ Eats brand palette — the source of truth for brand surfaces
+ * (splash / loading screen, logo, app icon). Existing COLORS tokens below
+ * still drive the rest of the app; these are additive and don't replace them.
+ */
+export const BRAND = {
+  deepGreen: "#0F3D2E",
+  njRed: "#D62828",
+  cream: "#F7F3EC",
+  gold: "#C8A96B",
+  nearBlack: "#1A1A1A",
+};
+
 export const COLORS = {
   bg: "#FDF6E9",
   bgElevated: "#FFFFFF",

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Shore Eats",
+    "name": "NJ Eats",
     "slug": "shore-eats",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,7 +14,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FDF6E9"
+        "backgroundColor": "#F7F3EC"
       },
       "package": "com.shoreeats.app"
     },
@@ -29,7 +29,7 @@
         {
           "image": "./assets/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#FDF6E9"
+          "backgroundColor": "#F7F3EC"
         }
       ],
       "expo-font"
