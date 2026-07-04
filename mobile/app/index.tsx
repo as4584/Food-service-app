@@ -7,13 +7,16 @@ import {
   Text,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { listRestaurants, RestaurantListItem, ApiError } from "../services/api";
 import { RestaurantCard } from "../components/RestaurantCard";
-import { COLORS, GRADIENTS, SPACING } from "../theme/tokens";
+import { Glimmer } from "../components/Glimmer";
+import { COLORS, FONTS, GRADIENTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
 
 export default function RestaurantListScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [restaurants, setRestaurants] = useState<RestaurantListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,9 +38,19 @@ export default function RestaurantListScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={GRADIENTS.sunset} style={styles.header}>
-        <Text style={styles.title}>Shore Eats</Text>
-        <Text style={styles.subtitle}>Jersey Shore eats, delivered 🌊</Text>
+      <LinearGradient
+        colors={GRADIENTS.sunset}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[styles.header, { paddingTop: insets.top + SPACING.lg }]}
+      >
+        <View pointerEvents="none" style={styles.glowBlobLarge} />
+        <View pointerEvents="none" style={styles.glowBlobSmall} />
+        <View style={styles.headerContent}>
+          <Text style={styles.title}>Shore Eats</Text>
+          <Text style={styles.subtitle}>Jersey Shore eats, delivered 🌊</Text>
+        </View>
+        <Glimmer />
       </LinearGradient>
 
       {loading ? (
@@ -68,15 +81,40 @@ export default function RestaurantListScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bg },
   header: {
-    paddingTop: 64,
-    paddingBottom: SPACING.xl,
+    paddingBottom: SPACING.xl + SPACING.sm,
     paddingHorizontal: SPACING.lg,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: RADII.xl,
+    borderBottomRightRadius: RADII.xl,
+    overflow: "hidden",
+    ...SHADOWS.header,
   },
-  title: { fontSize: 32, fontWeight: "800", color: "#FFFFFF" },
-  subtitle: { fontSize: 14, color: "#FFF3EC", marginTop: 4, fontWeight: "600" },
+  glowBlobLarge: {
+    position: "absolute",
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: "rgba(255,255,255,0.14)",
+    top: -110,
+    right: -60,
+  },
+  glowBlobSmall: {
+    position: "absolute",
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "rgba(255,255,255,0.10)",
+    bottom: -50,
+    left: -30,
+  },
+  headerContent: { position: "relative" },
+  title: { fontSize: 34, fontFamily: FONTS.displayBold, color: "#FFFFFF", letterSpacing: 0.2 },
+  subtitle: {
+    fontSize: 14,
+    color: "#FFF3EC",
+    marginTop: 4,
+    fontFamily: FONTS.bodySemiBold,
+  },
   list: { padding: SPACING.lg, paddingBottom: SPACING.xl },
   center: { flex: 1, alignItems: "center", justifyContent: "center", padding: SPACING.lg },
-  errorText: { color: COLORS.danger, textAlign: "center", fontWeight: "600" },
+  errorText: { color: COLORS.danger, textAlign: "center", fontFamily: FONTS.bodySemiBold },
 });

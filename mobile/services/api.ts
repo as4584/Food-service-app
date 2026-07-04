@@ -5,7 +5,7 @@
  * All endpoints go through /api/v1/. No auth — demo customer flow only.
  */
 const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
+  process.env.EXPO_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
 
 export class ApiError extends Error {
   status: number;
@@ -70,6 +70,7 @@ export interface RestaurantListItem {
   cuisine: string;
   image_emoji: string | null;
   image_url: string | null;
+  website_url: string | null;
   rating: string;
   eta_minutes: number;
   price_range: string;

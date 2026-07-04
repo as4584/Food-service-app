@@ -22,6 +22,17 @@ from app.models.base import Base
 from app.models.restaurant import Restaurant, MenuItem  # noqa: F401 — register model
 from app.models.order import Order, OrderItem  # noqa: F401 — register model
 
+# Fictional demo restaurants replaced 2026-07-04 with real NJ shore businesses
+# that have their own websites — retire the old rows on next seed run.
+RETIRED_RESTAURANT_NAMES = [
+    "Salt & Boardwalk Pizza Co.",
+    "Pork Roll Palace",
+    "The Wooden Plank Tavern",
+    "Seaside Slice House",
+    "Red Bank Raw Bar",
+    "Long Branch Taco Shack",
+]
+
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///./shore_eats.db")
 
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
@@ -36,6 +47,7 @@ RESTAURANTS = [
         description="Real Clifton, NJ pizzeria — cheese pies, Sicilian squares, stuffed pizza, subs, and Italian classics.",
         image_emoji="🍕",
         image_url="https://slicelife.imgix.net/10469/photos/original/open-uri20171123-1172-1p54uiy?auto=compress&auto=format&w=800&q=80",
+        website_url="https://www.masterpizzaofclifton.com/",
         rating="4.7",
         eta_minutes=28,
         price_range="$$",
@@ -59,126 +71,134 @@ RESTAURANTS = [
         ],
     ),
     dict(
-        name="Salt & Boardwalk Pizza Co.",
+        name="Luigi's Famous Pizza",
         town="Point Pleasant Beach",
         cuisine="Pizza / Italian",
-        description="Wood-fired boardwalk pizza a block from the beach.",
+        description="Real Point Pleasant Beach pizzeria, family-run since 1988 — NY-style pies, subs, and pasta.",
         image_emoji="🍕",
-        image_url="https://plus.unsplash.com/premium_photo-1668771085743-1d2d19818140?auto=format&fit=crop&w=800&q=80",
-        rating="4.7",
+        image_url="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=800&q=80",
+        website_url="https://luigisfamouspizzapointpleasant.com/",
+        rating="4.6",
         eta_minutes=25,
-        latitude=40.0879,
-        longitude=-74.0546,
+        latitude=40.0954,
+        longitude=-74.0534,
         price_range="$$",
         menu=[
-            dict(category="Appetizers", name="Garlic Knots", description="Baked to order, herb butter, parm.", price="6.99", image_emoji="🧄", image_url="https://images.unsplash.com/photo-1769521001298-f0415c53e013?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Appetizers", name="Zeppole (6pc)", description="Fried dough, powdered sugar.", price="5.99", image_emoji="🍩", image_url="https://images.unsplash.com/photo-1641349268827-05362f5e726c?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Boardwalk Classics", name="Jersey Tomato Pie", description="Sauce-on-top classic tomato pie.", price="18.99", image_emoji="🍅", image_url="https://images.unsplash.com/photo-1598023696416-0193a0bcd302?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Boardwalk Classics", name="Boardwalk Slice (2pc)", description="Grab-and-go cheese slices.", price="6.50", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Mains", name="Chicken Parm Sub", description="Fried chicken cutlet, mozzarella, marinara.", price="12.99", image_emoji="🥪", image_url="https://images.unsplash.com/photo-1777891257610-db6e1a9be7df?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Mains", name="Baked Ziti", description="House ricotta blend, slow-simmered sauce.", price="14.99", image_emoji="🍝", image_url="https://images.unsplash.com/photo-1671442131445-a99f2e59850a?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Drinks", name="Italian Ice", description="Lemon, cherry, or blue raspberry.", price="3.99", image_emoji="🧊", image_url="https://images.unsplash.com/photo-1728777185620-4e5f6cff03db?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pizza", name="Plain Cheese Pizza", description="Classic cheese, or create your own.", price="18.00", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1598023696416-0193a0bcd302?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pizza", name="Margherita Pizza", description="Fresh mozzarella, basil, tomatoes or marinara.", price="20.25", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pizza", name="White Pizza", description="Mozzarella, ricotta, garlic, spices.", price="18.00", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1689793605149-8c5c4b6db1cf?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pizza", name="Hot Honey Roni", description="Pepperoni and basil with a hot honey drizzle.", price="21.25", image_emoji="🍯", image_url="https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Subs & Sandwiches", name="Chicken Parmigiana Sub", description="Breaded chicken, fresh mozzarella.", price="10.75", image_emoji="🥪", image_url="https://images.unsplash.com/photo-1777891257610-db6e1a9be7df?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pasta", name="Penne Alla Vodka", description="Penne in a creamy vodka sauce.", price="14.25", image_emoji="🍝", image_url="https://images.unsplash.com/photo-1671442131445-a99f2e59850a?auto=format&fit=crop&w=800&q=80"),
         ],
     ),
     dict(
-        name="Pork Roll Palace",
+        name="Frank's Deli & Restaurant",
         town="Asbury Park",
-        cuisine="Diner / Breakfast All-Day",
-        description="Jersey diner classics served all day, every day.",
+        cuisine="Diner / Deli",
+        description="Real Asbury Park institution open since 1960 — breakfast, deli sandwiches, and diner classics.",
         image_emoji="🍳",
         image_url="https://images.unsplash.com/photo-1702460831732-b75fcd58659e?auto=format&fit=crop&w=800&q=80",
+        website_url="https://franksdelinj.com/",
         rating="4.6",
         eta_minutes=20,
-        latitude=40.2204,
-        longitude=-74.0121,
+        latitude=40.2233,
+        longitude=-74.0102,
         price_range="$",
         menu=[
-            dict(category="Breakfast", name="Pork Roll, Egg & Cheese", description="On a hard roll, griddled.", price="7.49", image_emoji="🥪", image_url="https://images.unsplash.com/photo-1629212274717-59f76381b00b?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Breakfast", name="Pork Roll, Egg & Cheese", description="Griddled Jersey diner classic.", price="7.49", image_emoji="🥪", image_url="https://images.unsplash.com/photo-1629212274717-59f76381b00b?auto=format&fit=crop&w=800&q=80"),
             dict(category="Breakfast", name="Taylor Ham Bagel", description="Everything bagel, fried egg.", price="7.99", image_emoji="🥯", image_url="https://images.unsplash.com/photo-1727245243403-b177f3670c2e?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Breakfast", name="Disco Fries", description="Fries, brown gravy, mozzarella.", price="8.99", image_emoji="🍟", image_url="https://images.unsplash.com/photo-1780030827889-b9a2fa9a7748?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Deli", name="Frank's Overstuffed Club", description="The house specialty triple-decker club.", price="11.99", image_emoji="🥪", image_url="https://images.unsplash.com/photo-1777891257610-db6e1a9be7df?auto=format&fit=crop&w=800&q=80"),
             dict(category="Bakery", name="Crumb Cake", description="Thick Jersey-style crumb topping.", price="4.99", image_emoji="🍰", image_url="https://images.unsplash.com/photo-1773399159524-8bb2293c5144?auto=format&fit=crop&w=800&q=80"),
             dict(category="Mains", name="Grilled Cheese & Tomato Soup", description="Classic diner combo.", price="10.99", image_emoji="🧀", image_url="https://images.unsplash.com/photo-1762647420988-5080acf33988?auto=format&fit=crop&w=800&q=80"),
             dict(category="Drinks", name="Diner Coffee", description="Bottomless cup.", price="2.99", image_emoji="☕", image_url="https://images.unsplash.com/photo-1561738788-8a63f045a4d3?auto=format&fit=crop&w=800&q=80"),
         ],
     ),
     dict(
-        name="The Wooden Plank Tavern",
+        name="Klein's Fish Market & Waterside Cafe",
         town="Belmar",
-        cuisine="American / Seafood",
-        description="Dockside tavern fare with a raw bar twist.",
+        cuisine="Seafood / Waterfront",
+        description="Real Belmar waterfront seafood market and cafe, family-run since the 1920s on the Shark River.",
         image_emoji="🦀",
-        image_url="https://images.unsplash.com/photo-1571167366136-b57e07761625?auto=format&fit=crop&w=800&q=80",
+        image_url="https://kleinsfish.com/wp-content/uploads/2024/09/Lobster.gif",
+        website_url="https://kleinsfish.com/",
         rating="4.5",
         eta_minutes=30,
         latitude=40.1770,
         longitude=-74.0257,
         price_range="$$",
         menu=[
-            dict(category="Appetizers", name="Crab Cake Sliders (3pc)", description="Jumbo lump, remoulade.", price="14.99", image_emoji="🦀", image_url="https://images.unsplash.com/photo-1760047550367-3d72fa3053c5?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Appetizers", name="Crab Cake Sandwich", description="With crispy waffle fries and coleslaw.", price="14.99", image_emoji="🦀", image_url="https://images.unsplash.com/photo-1760047550367-3d72fa3053c5?auto=format&fit=crop&w=800&q=80"),
             dict(category="Appetizers", name="Clam Chowder", description="New England style, oyster crackers.", price="7.99", image_emoji="🍲", image_url="https://images.unsplash.com/photo-1778600731540-48de5d5ae2fb?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Mains", name="Boardwalk Burger", description="Half-pound patty, cheddar, boardwalk fries.", price="15.99", image_emoji="🍔", image_url="https://images.unsplash.com/photo-1599082295807-6e4a92c0790d?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Mains", name="Fish & Chips", description="Beer-battered cod, malt vinegar.", price="16.99", image_emoji="🐟", image_url="https://images.unsplash.com/photo-1697748836791-9ddf7e616ece?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Mains", name="Lobster Roll", description="Fresh lobster meat, butter, New England roll, waffle fries & slaw.", price="30.00", image_emoji="🦞", image_url="https://images.unsplash.com/photo-1761682719764-b49608326fe9?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Mains", name="Fish & Chips", description="Beer-battered, malt vinegar.", price="16.99", image_emoji="🐟", image_url="https://images.unsplash.com/photo-1697748836791-9ddf7e616ece?auto=format&fit=crop&w=800&q=80"),
             dict(category="Desserts", name="Key Lime Pie", description="Graham crust, whipped cream.", price="6.99", image_emoji="🥧", image_url="https://images.unsplash.com/photo-1641848421525-e1da6f1b67aa?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Drinks", name="Birch Beer Float", description="NJ classic soda float.", price="4.99", image_emoji="🥤", image_url="https://images.unsplash.com/photo-1633983052467-e4fb46c36e4a?auto=format&fit=crop&w=800&q=80"),
         ],
     ),
     dict(
-        name="Seaside Slice House",
+        name="Maruca's Tomato Pies",
         town="Seaside Heights",
-        cuisine="Pizza / Boardwalk Snacks",
-        description="Everything you want on the boardwalk, on one menu.",
+        cuisine="Pizza / Boardwalk Classics",
+        description="Real Seaside Heights boardwalk institution since 1950 — Trenton-style tomato pies, sauce on top.",
         image_emoji="🎡",
-        image_url="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=800&q=80",
-        rating="4.4",
+        image_url="https://images.unsplash.com/photo-1598023696416-0193a0bcd302?auto=format&fit=crop&w=800&q=80",
+        website_url="https://www.marucaspizza.com/",
+        rating="4.7",
         eta_minutes=22,
-        latitude=39.9376,
-        longitude=-74.0743,
+        latitude=39.9377,
+        longitude=-74.0729,
         price_range="$",
         menu=[
-            dict(category="Boardwalk Classics", name="Sausage & Peppers Slice", description="Loaded slice, sweet peppers.", price="5.99", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1689793605149-8c5c4b6db1cf?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Tomato Pies", name="18\" Large Tomato Pie", description="Trenton-style, sauce swirled on top.", price="23.00", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1598023696416-0193a0bcd302?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Tomato Pies", name="12\" Bar Pie", description="Thin, crispy personal-size pie.", price="13.00", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1689793605149-8c5c4b6db1cf?auto=format&fit=crop&w=800&q=80"),
             dict(category="Boardwalk Classics", name="Funnel Cake", description="Powdered sugar, classic boardwalk treat.", price="7.99", image_emoji="🍥", image_url="https://images.unsplash.com/photo-1645461257081-7fc480c722cd?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Boardwalk Classics", name="Zeppole (8pc)", description="Fresh fried, powdered sugar.", price="6.99", image_emoji="🍩", image_url="https://images.unsplash.com/photo-1641349268827-05362f5e726c?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Sides", name="Mozzarella Sticks", description="Golden fried, marinara.", price="13.00", image_emoji="🧀", image_url="https://images.unsplash.com/photo-1778449665117-2c607bbc7415?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Sides", name="Wings", description="Tossed in your choice of sauce.", price="12.00", image_emoji="🍗", image_url="https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=800&q=80"),
             dict(category="Drinks", name="Snow Cone", description="Rainbow, cherry, or blue raspberry.", price="4.49", image_emoji="🍧", image_url="https://images.unsplash.com/photo-1609864517307-7c5234cc38be?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Mains", name="Boardwalk Cheesesteak", description="Griddled ribeye, provolone, onions.", price="12.99", image_emoji="🥙", image_url="https://images.unsplash.com/photo-1734769853702-c7444c039c8c?auto=format&fit=crop&w=800&q=80"),
         ],
     ),
     dict(
-        name="Red Bank Raw Bar",
+        name="The Boondocks Fishery",
         town="Red Bank",
         cuisine="Seafood / Raw Bar",
-        description="Navesink River seafood, oysters shucked to order.",
+        description="Real Navesink riverfront seafood shack in Red Bank — lobster nights and outdoor waterside dining.",
         image_emoji="🦪",
         image_url="https://images.unsplash.com/photo-1717251752308-2ef72f07484e?auto=format&fit=crop&w=800&q=80",
-        rating="4.8",
+        website_url="https://theboondocksfishery.com/",
+        rating="4.5",
         eta_minutes=28,
-        latitude=40.3471,
-        longitude=-74.0643,
+        latitude=40.3520,
+        longitude=-74.0637,
         price_range="$$$",
         menu=[
-            dict(category="Raw Bar", name="Oysters on the Half Shell (6pc)", description="Local NJ oysters, mignonette.", price="16.99", image_emoji="🦪", image_url="https://images.unsplash.com/photo-1717251882176-acdf0d46282c?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Raw Bar", name="Jumbo Shrimp Cocktail", description="Chilled, house cocktail sauce.", price="14.99", image_emoji="🍤", image_url="https://images.unsplash.com/photo-1751152841080-dedb3b716b83?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Mains", name="Lobster Roll", description="Warm butter or cold mayo, split-top bun.", price="24.99", image_emoji="🦞", image_url="https://images.unsplash.com/photo-1761682719764-b49608326fe9?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Mains", name="Jersey Corn Chowder", description="Sweet corn, bacon, cream.", price="9.99", image_emoji="🌽", image_url="https://images.unsplash.com/photo-1744094127440-55d804337a62?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Desserts", name="Boardwalk Fudge Brownie", description="Warm, vanilla ice cream.", price="7.99", image_emoji="🍫", image_url="https://images.unsplash.com/photo-1654796605330-8a1248a2cb07?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Appetizers", name="Fried Calamari", description="Crispy calamari, marinara.", price="17.95", image_emoji="🦑", image_url="https://images.unsplash.com/photo-1763467940825-d067fb3baf22?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Appetizers", name="Cajun Tuna Bites", description="Blackened ahi, Cajun spice.", price="14.95", image_emoji="🐟", image_url="https://images.unsplash.com/photo-1763467940825-d067fb3baf22?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Appetizers", name="Coconut Shrimp", description="Crispy coconut breading.", price="15.95", image_emoji="🍤", image_url="https://images.unsplash.com/photo-1751152841080-dedb3b716b83?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Mains", name="Shrimp Scampi", description="Garlic butter white wine sauce.", price="26.95", image_emoji="🍤", image_url="https://images.unsplash.com/photo-1751152841080-dedb3b716b83?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Mains", name="Fish & Chips", description="Beer-battered, malt vinegar.", price="22.95", image_emoji="🐟", image_url="https://images.unsplash.com/photo-1697748836791-9ddf7e616ece?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Mains", name="Lobster Dinner", description="Whole steamed lobster, drawn butter.", price="36.95", image_emoji="🦞", image_url="https://images.unsplash.com/photo-1761682719764-b49608326fe9?auto=format&fit=crop&w=800&q=80"),
         ],
     ),
     dict(
-        name="Long Branch Taco Shack",
+        name="Galindos Kitchen",
         town="Long Branch",
-        cuisine="Mexican / Beach Fusion",
-        description="Beachside tacos with a Jersey Shore twist.",
+        cuisine="Mexican",
+        description="Real family-owned Long Branch taqueria since 2018 — authentic Mexican cuisine, Taco Tuesday specials.",
         image_emoji="🌮",
         image_url="https://images.unsplash.com/photo-1648437595587-e6a8b0cdf1f9?auto=format&fit=crop&w=800&q=80",
+        website_url="https://galindoskitchen.net/",
         rating="4.6",
         eta_minutes=24,
-        latitude=40.3043,
-        longitude=-73.9924,
+        latitude=40.2967,
+        longitude=-73.9932,
         price_range="$$",
         menu=[
-            dict(category="Tacos", name="Fish Tacos (3pc)", description="Beer-battered, cabbage slaw, chipotle crema.", price="13.99", image_emoji="🌮", image_url="https://images.unsplash.com/photo-1711989874705-bb85dc205541?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Tacos", name="Carne Asada Tacos (3pc)", description="Grilled steak, cilantro, onion.", price="14.99", image_emoji="🌮", image_url="https://images.unsplash.com/photo-1687881063470-a78e6ea2590e?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Sides", name="Elote", description="Grilled corn, cotija, chili-lime.", price="5.99", image_emoji="🌽", image_url="https://images.unsplash.com/photo-1635572228172-ff4ea7f07e8f?auto=format&fit=crop&w=800&q=80"),
-            dict(category="Mains", name="Beachside Burrito", description="Rice, beans, choice of protein, guac.", price="12.99", image_emoji="🌯", image_url="https://images.unsplash.com/photo-1731090389603-d63060ee08a6?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Tacos", name="Chicken Tacos (4pc)", description="Grilled chicken, cilantro, onion.", price="13.99", image_emoji="🌮", image_url="https://images.unsplash.com/photo-1711989874705-bb85dc205541?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Tacos", name="Pastor Tacos (4pc)", description="Al pastor pork, pineapple, cilantro, onion.", price="14.99", image_emoji="🌮", image_url="https://images.unsplash.com/photo-1687881063470-a78e6ea2590e?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Tacos", name="Shrimp California Style Tacos (3pc)", description="Grilled shrimp, cabbage slaw, crema.", price="15.99", image_emoji="🌮", image_url="https://images.unsplash.com/photo-1711989874705-bb85dc205541?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Mains", name="Zeke's Carnitas", description="Slow-braised pulled pork, house style.", price="16.99", image_emoji="🌯", image_url="https://images.unsplash.com/photo-1687881063470-a78e6ea2590e?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Mains", name="Classic Burrito", description="Rice, beans, choice of protein.", price="12.99", image_emoji="🌯", image_url="https://images.unsplash.com/photo-1731090389603-d63060ee08a6?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Mains", name="Quesadilla", description="Corn tortilla, melted cheese, choice of protein.", price="11.99", image_emoji="🧀", image_url="https://images.unsplash.com/photo-1731090389603-d63060ee08a6?auto=format&fit=crop&w=800&q=80"),
             dict(category="Drinks", name="Horchata", description="Housemade cinnamon rice drink.", price="3.99", image_emoji="🥛", image_url="https://images.unsplash.com/photo-1775264175004-604006f6c8b0?auto=format&fit=crop&w=800&q=80"),
         ],
     ),
@@ -194,6 +214,20 @@ def main():
 
     db = SessionLocal()
     try:
+        retired = db.query(Restaurant).filter(Restaurant.name.in_(RETIRED_RESTAURANT_NAMES)).all()
+        for restaurant in retired:
+            db.query(MenuItem).filter(MenuItem.restaurant_id == restaurant.id).delete()
+            db.query(OrderItem).filter(
+                OrderItem.order_id.in_(
+                    db.query(Order.id).filter(Order.restaurant_id == restaurant.id)
+                )
+            ).delete(synchronize_session=False)
+            db.query(Order).filter(Order.restaurant_id == restaurant.id).delete()
+            db.delete(restaurant)
+        if retired:
+            db.commit()
+            print(f"[seed_dev] Retired {len(retired)} replaced demo restaurant(s).")
+
         existing_names = {r.name for r in db.query(Restaurant).all()}
         created_restaurants = 0
         created_items = 0
@@ -206,6 +240,7 @@ def main():
                 # image_url for a restaurant that was seeded before photos existed).
                 restaurant.image_url = spec.get("image_url")
                 restaurant.image_emoji = spec["image_emoji"]
+                restaurant.website_url = spec.get("website_url")
                 restaurant.latitude = spec.get("latitude")
                 restaurant.longitude = spec.get("longitude")
                 restaurant.is_featured = spec.get("is_featured", False)
@@ -218,6 +253,7 @@ def main():
                     description=spec["description"],
                     image_emoji=spec["image_emoji"],
                     image_url=spec.get("image_url"),
+                    website_url=spec.get("website_url"),
                     latitude=spec.get("latitude"),
                     longitude=spec.get("longitude"),
                     is_featured=spec.get("is_featured", False),
@@ -269,12 +305,12 @@ def main():
         print("Shore Eats dev data is ready.")
         print()
         print("Start the backend:")
-        print("  uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload")
+        print("  uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload")
         print()
         print("Try it:")
-        print("  curl http://localhost:8000/api/v1/health")
-        print("  curl http://localhost:8000/api/v1/restaurants")
-        print(f"  curl http://localhost:8000/api/v1/restaurants/{sample_restaurant_id}")
+        print("  curl http://localhost:8001/api/v1/health")
+        print("  curl http://localhost:8001/api/v1/restaurants")
+        print(f"  curl http://localhost:8001/api/v1/restaurants/{sample_restaurant_id}")
         print("=" * 60)
     finally:
         db.close()

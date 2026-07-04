@@ -4,16 +4,19 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Linking,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { getRestaurant, RestaurantDetail, ApiError } from "../../services/api";
 import { useCart } from "../../context/CartContext";
 import { MenuItemRow } from "../../components/MenuItemRow";
 import { CartBar } from "../../components/CartBar";
-import { COLORS, RADII, SPACING } from "../../theme/tokens";
+import { COLORS, FONTS, GRADIENTS, RADII, SHADOWS, SPACING } from "../../theme/tokens";
 
 export default function RestaurantScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -101,6 +104,26 @@ export default function RestaurantScreen() {
           <Text style={styles.description}>{restaurant.description}</Text>
         ) : null}
 
+        {restaurant.website_url ? (
+          <Pressable
+            style={({ pressed }) => [styles.websiteBannerWrap, pressed && styles.pressedShrink]}
+            onPress={() => Linking.openURL(restaurant.website_url!)}
+          >
+            <LinearGradient
+              colors={GRADIENTS.ocean}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.websiteBanner}
+            >
+              <View style={styles.websiteBannerText}>
+                <Text style={styles.websiteBannerTitle}>Visit {restaurant.name}'s Website</Text>
+                <Text style={styles.websiteBannerSubtitle}>Order directly, view full menu & hours</Text>
+              </View>
+              <Text style={styles.websiteBannerArrow}>↗</Text>
+            </LinearGradient>
+          </Pressable>
+        ) : null}
+
         {Object.entries(grouped).map(([category, items]) => (
           <View key={category} style={styles.section}>
             <Text style={styles.sectionTitle}>{category}</Text>
@@ -130,20 +153,35 @@ const styles = StyleSheet.create({
   scroll: { padding: SPACING.lg, paddingBottom: 100 },
   hero: {
     width: "100%",
-    height: 160,
+    height: 170,
     borderRadius: RADII.lg,
     marginBottom: SPACING.md,
     backgroundColor: COLORS.primarySoft,
+    ...SHADOWS.card,
   },
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.bg },
-  errorText: { color: COLORS.danger, fontWeight: "600" },
-  name: { fontSize: 24, fontWeight: "800", color: COLORS.text },
-  meta: { fontSize: 13, color: COLORS.textMuted, marginTop: 4, fontWeight: "600" },
-  description: { fontSize: 14, color: COLORS.textMuted, marginTop: SPACING.sm, lineHeight: 20 },
+  errorText: { color: COLORS.danger, fontFamily: FONTS.bodySemiBold },
+  name: { fontSize: 25, fontFamily: FONTS.displayBold, color: COLORS.text },
+  meta: { fontSize: 13, color: COLORS.textMuted, marginTop: 4, fontFamily: FONTS.bodySemiBold },
+  description: { fontSize: 14, color: COLORS.textMuted, marginTop: SPACING.sm, lineHeight: 20, fontFamily: FONTS.body },
+  websiteBannerWrap: { marginTop: SPACING.md, borderRadius: RADII.md, ...SHADOWS.card },
+  pressedShrink: { transform: [{ scale: 0.98 }] },
+  websiteBanner: {
+    borderRadius: RADII.md,
+    paddingVertical: SPACING.sm + 2,
+    paddingHorizontal: SPACING.md,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  websiteBannerText: { flex: 1, marginRight: SPACING.sm },
+  websiteBannerTitle: { color: "#FFFFFF", fontFamily: FONTS.bodyBold, fontSize: 14 },
+  websiteBannerSubtitle: { color: "#E3F6FC", fontFamily: FONTS.body, fontSize: 12, marginTop: 2 },
+  websiteBannerArrow: { color: "#FFFFFF", fontSize: 20, fontFamily: FONTS.bodyBold },
   section: { marginTop: SPACING.lg },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: "800",
+    fontSize: 17,
+    fontFamily: FONTS.display,
     color: COLORS.text,
     marginBottom: SPACING.sm,
   },

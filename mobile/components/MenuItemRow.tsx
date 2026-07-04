@@ -1,5 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { COLORS, RADII, SPACING } from "../theme/tokens";
+import { LinearGradient } from "expo-linear-gradient";
+import { COLORS, FONTS, GRADIENTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
 import type { MenuItem } from "../services/api";
 
 export function MenuItemRow({
@@ -38,8 +39,15 @@ export function MenuItemRow({
           </Pressable>
         )}
         {quantity > 0 && <Text style={styles.qty}>{quantity}</Text>}
-        <Pressable style={[styles.stepBtn, styles.addBtn]} onPress={onAdd} hitSlop={8}>
-          <Text style={[styles.stepBtnText, styles.addBtnText]}>+</Text>
+        <Pressable onPress={onAdd} hitSlop={8}>
+          <LinearGradient
+            colors={GRADIENTS.primaryButton}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={[styles.stepBtn, styles.addBtn]}
+          >
+            <Text style={[styles.stepBtnText, styles.addBtnText]}>+</Text>
+          </LinearGradient>
         </Pressable>
       </View>
     </View>
@@ -54,12 +62,11 @@ const styles = StyleSheet.create({
     borderRadius: RADII.md,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
-    borderWidth: 1,
-    borderColor: COLORS.border,
+    ...SHADOWS.card,
   },
   emojiWrap: {
-    width: 48,
-    height: 48,
+    width: 52,
+    height: 52,
     borderRadius: RADII.sm,
     backgroundColor: COLORS.primarySoft,
     alignItems: "center",
@@ -68,15 +75,15 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   image: { width: "100%", height: "100%" },
-  emoji: { fontSize: 24 },
+  emoji: { fontSize: 26 },
   info: { flex: 1, marginRight: SPACING.sm },
-  name: { fontSize: 15, fontWeight: "700", color: COLORS.text },
-  description: { fontSize: 12, color: COLORS.textMuted, marginTop: 2 },
-  price: { fontSize: 13, color: COLORS.ocean, fontWeight: "700", marginTop: 4 },
+  name: { fontSize: 15, fontFamily: FONTS.bodyBold, color: COLORS.text },
+  description: { fontSize: 12, color: COLORS.textMuted, marginTop: 2, fontFamily: FONTS.body },
+  price: { fontSize: 13, color: COLORS.ocean, fontFamily: FONTS.bodyBold, marginTop: 4 },
   stepper: { flexDirection: "row", alignItems: "center" },
   stepBtn: {
-    width: 28,
-    height: 28,
+    width: 30,
+    height: 30,
     borderRadius: RADII.pill,
     backgroundColor: COLORS.bgElevated,
     borderWidth: 1,
@@ -84,8 +91,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  addBtn: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
-  stepBtnText: { fontSize: 16, fontWeight: "700", color: COLORS.text, lineHeight: 18 },
+  addBtn: { borderWidth: 0, ...SHADOWS.button, shadowOpacity: 0.22, shadowRadius: 6, elevation: 3 },
+  stepBtnText: { fontSize: 16, fontFamily: FONTS.bodyBold, color: COLORS.text, lineHeight: 18 },
   addBtnText: { color: "#FFFFFF" },
-  qty: { width: 24, textAlign: "center", fontWeight: "700", color: COLORS.text },
+  qty: { width: 24, textAlign: "center", fontFamily: FONTS.bodyBold, color: COLORS.text },
 });

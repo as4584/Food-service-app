@@ -1,5 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { COLORS, RADII, SPACING } from "../theme/tokens";
+import { LinearGradient } from "expo-linear-gradient";
+import { COLORS, FONTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
 import type { RestaurantListItem } from "../services/api";
 
 export function RestaurantCard({
@@ -10,13 +11,23 @@ export function RestaurantCard({
   onPress: () => void;
 }) {
   return (
-    <Pressable style={styles.card} onPress={onPress}>
+    <Pressable
+      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+      onPress={onPress}
+    >
       <View style={styles.imageWrap}>
         {restaurant.image_url ? (
           <Image source={{ uri: restaurant.image_url }} style={styles.image} resizeMode="cover" />
         ) : (
           <Text style={styles.emoji}>{restaurant.image_emoji ?? "🍽️"}</Text>
         )}
+        <LinearGradient
+          pointerEvents="none"
+          colors={["rgba(255,255,255,0.35)", "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0.6, y: 0.6 }}
+          style={styles.imageShine}
+        />
         {restaurant.image_url && restaurant.image_emoji ? (
           <View style={styles.emojiBadge}>
             <Text style={styles.emojiBadgeText}>{restaurant.image_emoji}</Text>
@@ -31,11 +42,15 @@ export function RestaurantCard({
           {restaurant.cuisine} · {restaurant.town}
         </Text>
         <View style={styles.metaRow}>
-          <Text style={styles.meta}>⭐ {restaurant.rating}</Text>
-          <Text style={styles.metaDot}>·</Text>
-          <Text style={styles.meta}>{restaurant.eta_minutes} min</Text>
-          <Text style={styles.metaDot}>·</Text>
-          <Text style={styles.meta}>{restaurant.price_range}</Text>
+          <View style={styles.metaChip}>
+            <Text style={styles.meta}>⭐ {restaurant.rating}</Text>
+          </View>
+          <View style={styles.metaChip}>
+            <Text style={styles.meta}>{restaurant.eta_minutes} min</Text>
+          </View>
+          <View style={styles.metaChip}>
+            <Text style={styles.meta}>{restaurant.price_range}</Text>
+          </View>
         </View>
       </View>
     </Pressable>
@@ -49,13 +64,13 @@ const styles = StyleSheet.create({
     borderRadius: RADII.lg,
     padding: SPACING.md,
     marginBottom: SPACING.md,
-    borderWidth: 1,
-    borderColor: COLORS.border,
     alignItems: "center",
+    ...SHADOWS.card,
   },
+  cardPressed: { opacity: 0.92, transform: [{ scale: 0.99 }] },
   imageWrap: {
-    width: 64,
-    height: 64,
+    width: 76,
+    height: 76,
     borderRadius: RADII.md,
     backgroundColor: COLORS.primarySoft,
     alignItems: "center",
@@ -64,13 +79,14 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   image: { width: "100%", height: "100%" },
-  emoji: { fontSize: 32 },
+  imageShine: { ...StyleSheet.absoluteFillObject },
+  emoji: { fontSize: 34 },
   emojiBadge: {
     position: "absolute",
     bottom: -2,
     right: -2,
-    width: 22,
-    height: 22,
+    width: 24,
+    height: 24,
     borderRadius: RADII.pill,
     backgroundColor: COLORS.bgElevated,
     borderWidth: 1,
@@ -80,9 +96,14 @@ const styles = StyleSheet.create({
   },
   emojiBadgeText: { fontSize: 12 },
   info: { flex: 1 },
-  name: { fontSize: 17, fontWeight: "700", color: COLORS.text },
-  cuisine: { fontSize: 13, color: COLORS.textMuted, marginTop: 2 },
-  metaRow: { flexDirection: "row", alignItems: "center", marginTop: 6 },
-  meta: { fontSize: 12, color: COLORS.textSoft, fontWeight: "600" },
-  metaDot: { fontSize: 12, color: COLORS.textSoft, marginHorizontal: 6 },
+  name: { fontSize: 17, fontFamily: FONTS.bodyBold, color: COLORS.text },
+  cuisine: { fontSize: 13, color: COLORS.textMuted, marginTop: 3, fontFamily: FONTS.body },
+  metaRow: { flexDirection: "row", alignItems: "center", marginTop: 8, gap: 6 },
+  metaChip: {
+    backgroundColor: COLORS.cardAlt,
+    borderRadius: RADII.pill,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  meta: { fontSize: 11.5, color: COLORS.ocean, fontFamily: FONTS.bodyBold },
 });

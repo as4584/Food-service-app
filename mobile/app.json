@@ -31,7 +31,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#FDF6E9"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "extra": {
       "router": {}

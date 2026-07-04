@@ -83,7 +83,7 @@ Scan this in the **Expo Go** app to open the current build directly on your phon
 This only works while the development machine and its tunnel are actually running — it is not a hosted, always-on link. As of **2026-07-04** it points to:
 
 ```
-exp://h0asava-lexmakesit-8082.exp.direct
+exp://many-solutions-balloon-headed.trycloudflare.com
 ```
 
 This section will be updated (or removed) as the demo setup changes.
