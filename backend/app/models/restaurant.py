@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, String, Numeric, Integer, Boolean, ForeignKey, Uuid
+from sqlalchemy import Column, String, Numeric, Integer, Boolean, Float, ForeignKey, Uuid
 
 from app.models.base import Base, TimestampMixin
 
@@ -18,6 +18,9 @@ class Restaurant(Base, TimestampMixin):
     rating = Column(Numeric(2, 1), nullable=False, default="4.5")
     eta_minutes = Column(Integer, nullable=False, default=25)
     price_range = Column(String(4), nullable=False, default="$$")
+    latitude = Column(Float, nullable=True)
+    longitude = Column(Float, nullable=True)
+    is_featured = Column(Boolean, nullable=False, default=False)
 
 
 class MenuItem(Base, TimestampMixin):

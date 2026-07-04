@@ -34,6 +34,8 @@ def _to_response(order: Order, db: Session) -> OrderResponse:
         id=order.id,
         restaurant_id=order.restaurant_id,
         restaurant_name=restaurant.name if restaurant else "Unknown",
+        restaurant_latitude=restaurant.latitude if restaurant else None,
+        restaurant_longitude=restaurant.longitude if restaurant else None,
         customer_name=order.customer_name,
         delivery_address=order.delivery_address,
         subtotal=order.subtotal,

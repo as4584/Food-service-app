@@ -31,6 +31,9 @@ class RestaurantListItem(BaseModel):
     rating: Decimal
     eta_minutes: int
     price_range: str
+    is_featured: bool
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
 
 
 class RestaurantDetail(RestaurantListItem):

@@ -18,7 +18,9 @@ router = APIRouter(prefix="/restaurants", tags=["restaurants"])
 
 @router.get("", response_model=list[RestaurantListItem])
 def list_restaurants(db: Session = Depends(get_db)):
-    return db.query(Restaurant).order_by(Restaurant.town, Restaurant.name).all()
+    return db.query(Restaurant).order_by(
+        Restaurant.is_featured.desc(), Restaurant.town, Restaurant.name
+    ).all()
 
 
 @router.get("/{restaurant_id}", response_model=RestaurantDetail)
@@ -41,6 +43,9 @@ def get_restaurant(restaurant_id: UUID, db: Session = Depends(get_db)):
         rating=restaurant.rating,
         eta_minutes=restaurant.eta_minutes,
         price_range=restaurant.price_range,
+        is_featured=restaurant.is_featured,
+        latitude=restaurant.latitude,
+        longitude=restaurant.longitude,
         description=restaurant.description,
         menu_items=items,
     )

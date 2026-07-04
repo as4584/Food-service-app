@@ -73,6 +73,9 @@ export interface RestaurantListItem {
   rating: string;
   eta_minutes: number;
   price_range: string;
+  is_featured: boolean;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface RestaurantDetail extends RestaurantListItem {
@@ -108,6 +111,8 @@ export interface OrderResponse {
   id: string;
   restaurant_id: string;
   restaurant_name: string;
+  restaurant_latitude: number | null;
+  restaurant_longitude: number | null;
   customer_name: string | null;
   delivery_address: string | null;
   subtotal: string;

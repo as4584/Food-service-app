@@ -31,6 +31,9 @@ Replaced the emoji-only restaurant cards with real photos (sourced via web searc
 **2026-07-04 — Photos for every menu item, and a decision not to chase true 3D.**
 Sourced and verified a real, dish-matched photo (Unsplash License) for all 33 distinct menu items across the six restaurants — not just generic food stock photos, but ones that actually match each dish (e.g. a real tomato pie photo for the Jersey Tomato Pie, real oysters for the raw bar). Also explored adding a "driver en route" 3D graphic to the order-tracking screen. Before installing anything, checked compatibility of `@react-three/fiber` + `expo-gl` against this project's Expo SDK version and found documented cases of that exact combination breaking on real devices from dependency mismatches, with no confirmed compatibility info yet for the SDK version this app is on. Rather than risk a blank/crashed screen during an actual pitch, went with a 2D animated route map instead — an SVG path from restaurant to delivery address with a vehicle icon animating along it, built entirely on packages already in the project (`react-native-svg`, `react-native-reanimated`), synced to the same order-status data driving the stepper. Verified with a full typecheck and bundle export; on-device confirmation in Expo Go is still pending.
 
+**2026-07-04 — Added the actual lead's restaurant, and a real-looking map.**
+The prospective client's own business — Master Pizza, 1326 Main Ave, Clifton NJ (pulled from his live site, masterpizzaofclifton.com) — is now the first restaurant in the app, with his real menu (cheese/Sicilian/stuffed pizza, subs, pasta, apps, desserts) and his actual photo. It's marked as featured so it always sorts to the top of the list. Also rebuilt the delivery-tracking graphic: the earlier SVG stylized route was replaced with an actual embedded map (Leaflet.js + OpenStreetMap tiles, both free/open source, rendered in a `react-native-webview` — confirmed included in Expo Go before installing) showing real streets around each restaurant's town, with a route line and a vehicle icon that now rotates to face its direction of travel as it moves, using a CC0 top-down car sprite from Kenney.nl (Racing Pack, public domain, no attribution required). The "delivery" endpoint is still a fixed nearby offset rather than a geocoded version of whatever address is typed at checkout — there's no geocoding service wired up yet, so this remains a convincing approximation, not a real destination.
+
 ---
 
 ## Why This Exists
@@ -44,13 +47,13 @@ The near-term goal is narrow on purpose: prove the core ordering experience is g
 ## Features
 
 ### ✅ Current
-- Browse a seeded list of NJ restaurants (cuisine, rating, ETA, price range), each with a real photo
-- View full restaurant menus grouped by category, with a real photo per dish (33 menu items, individually sourced to match)
+- Browse a seeded list of NJ restaurants (cuisine, rating, ETA, price range), each with a real photo — featuring the prospective client's actual restaurant, Master Pizza of Clifton, pinned to the top with his real menu and photo
+- View full restaurant menus grouped by category, with a real photo per dish (47 menu items across 7 restaurants, individually sourced to match)
 - Add/remove items and adjust quantities in a cart
 - Checkout with editable customer name and delivery address
 - Orders are created and persisted through a real backend API — not mocked on the client
 - Automatic order-status progression (Placed → Preparing → Out for Delivery → Delivered), computed from elapsed time since the order was placed (~15 seconds end-to-end for demo pacing)
-- An animated 2D route map on the tracking screen — a vehicle icon moving from restaurant to delivery address, synced to the same order-status data
+- A real embedded map (Leaflet + OpenStreetMap) on the tracking screen, with a rotating vehicle icon animating along a route from the restaurant, synced to the same order-status data
 - NJ sales tax (6.625%) and delivery fee calculated server-side
 - Runs directly in Expo Go — no custom native build required
 

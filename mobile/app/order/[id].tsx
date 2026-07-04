@@ -66,6 +66,8 @@ export default function OrderStatusScreen() {
 
       <View style={styles.mapCard}>
         <DeliveryMap
+          restaurantLat={order.restaurant_latitude}
+          restaurantLng={order.restaurant_longitude}
           atRestaurant={order.stage_index < 2}
           progress={order.stage === "out_for_delivery" ? order.progress_in_stage : order.stage_index >= 3 ? 1 : 0}
         />

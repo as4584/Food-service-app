@@ -33,6 +33,8 @@ class OrderResponse(BaseModel):
     id: UUID
     restaurant_id: UUID
     restaurant_name: str
+    restaurant_latitude: Optional[float] = None
+    restaurant_longitude: Optional[float] = None
     customer_name: Optional[str] = None
     delivery_address: Optional[str] = None
     subtotal: Decimal

@@ -30,6 +30,35 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 RESTAURANTS = [
     dict(
+        name="Master Pizza",
+        town="Clifton",
+        cuisine="Italian / Pizza",
+        description="Real Clifton, NJ pizzeria — cheese pies, Sicilian squares, stuffed pizza, subs, and Italian classics.",
+        image_emoji="🍕",
+        image_url="https://slicelife.imgix.net/10469/photos/original/open-uri20171123-1172-1p54uiy?auto=compress&auto=format&w=800&q=80",
+        rating="4.7",
+        eta_minutes=28,
+        price_range="$$",
+        latitude=40.8584,
+        longitude=-74.1638,
+        is_featured=True,
+        menu=[
+            dict(category="Pizza", name="Cheese Pizza", description="Classic New York-style cheese pie.", price="11.95", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1598023696416-0193a0bcd302?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pizza", name="Sicilian Cheese Pizza", description="Thick-crust square pie.", price="19.45", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pizza", name="Buffalo Chicken Pizza", description="Buffalo chicken, mozzarella, ranch drizzle.", price="14.95", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pizza", name="Stuffed Pizza", description="Ricotta and mozzarella stuffed, red sauce on top.", price="22.75", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1689793605149-8c5c4b6db1cf?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Appetizers", name="Garlic Knots", description="Baked to order, herb butter, parm.", price="6.95", image_emoji="🧄", image_url="https://images.unsplash.com/photo-1769521001298-f0415c53e013?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Appetizers", name="Fried Calamari", description="Crispy calamari, marinara.", price="13.95", image_emoji="🦑", image_url="https://images.unsplash.com/photo-1763467940825-d067fb3baf22?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Appetizers", name="Mozzarella Sticks", description="Golden fried, marinara.", price="9.95", image_emoji="🧀", image_url="https://images.unsplash.com/photo-1778449665117-2c607bbc7415?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Subs & Sandwiches", name="Chicken Cheesesteak", description="Griddled chicken, provolone, peppers & onions.", price="11.95", image_emoji="🥙", image_url="https://images.unsplash.com/photo-1734769853702-c7444c039c8c?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Subs & Sandwiches", name="Italian Hot Sub", description="Ham, salami, capicola, provolone, hots.", price="10.95", image_emoji="🥪", image_url="https://images.unsplash.com/photo-1777891257610-db6e1a9be7df?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pasta", name="Baked Ziti", description="House ricotta blend, slow-simmered sauce.", price="14.95", image_emoji="🍝", image_url="https://images.unsplash.com/photo-1671442131445-a99f2e59850a?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Pasta", name="Chicken Parmigiana", description="Breaded chicken cutlet, mozzarella, spaghetti.", price="16.95", image_emoji="🍗", image_url="https://images.unsplash.com/photo-1777891257610-db6e1a9be7df?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Desserts", name="Cannoli", description="Ricotta filling, chocolate chips.", price="4.50", image_emoji="🍮", image_url="https://images.unsplash.com/photo-1641349268827-05362f5e726c?auto=format&fit=crop&w=800&q=80"),
+            dict(category="Desserts", name="Zeppoles", description="Fried dough, powdered sugar.", price="4.00", image_emoji="🍩", image_url="https://images.unsplash.com/photo-1641349268827-05362f5e726c?auto=format&fit=crop&w=800&q=80"),
+        ],
+    ),
+    dict(
         name="Salt & Boardwalk Pizza Co.",
         town="Point Pleasant Beach",
         cuisine="Pizza / Italian",
@@ -38,6 +67,8 @@ RESTAURANTS = [
         image_url="https://plus.unsplash.com/premium_photo-1668771085743-1d2d19818140?auto=format&fit=crop&w=800&q=80",
         rating="4.7",
         eta_minutes=25,
+        latitude=40.0879,
+        longitude=-74.0546,
         price_range="$$",
         menu=[
             dict(category="Appetizers", name="Garlic Knots", description="Baked to order, herb butter, parm.", price="6.99", image_emoji="🧄", image_url="https://images.unsplash.com/photo-1769521001298-f0415c53e013?auto=format&fit=crop&w=800&q=80"),
@@ -58,6 +89,8 @@ RESTAURANTS = [
         image_url="https://images.unsplash.com/photo-1702460831732-b75fcd58659e?auto=format&fit=crop&w=800&q=80",
         rating="4.6",
         eta_minutes=20,
+        latitude=40.2204,
+        longitude=-74.0121,
         price_range="$",
         menu=[
             dict(category="Breakfast", name="Pork Roll, Egg & Cheese", description="On a hard roll, griddled.", price="7.49", image_emoji="🥪", image_url="https://images.unsplash.com/photo-1629212274717-59f76381b00b?auto=format&fit=crop&w=800&q=80"),
@@ -77,6 +110,8 @@ RESTAURANTS = [
         image_url="https://images.unsplash.com/photo-1571167366136-b57e07761625?auto=format&fit=crop&w=800&q=80",
         rating="4.5",
         eta_minutes=30,
+        latitude=40.1770,
+        longitude=-74.0257,
         price_range="$$",
         menu=[
             dict(category="Appetizers", name="Crab Cake Sliders (3pc)", description="Jumbo lump, remoulade.", price="14.99", image_emoji="🦀", image_url="https://images.unsplash.com/photo-1760047550367-3d72fa3053c5?auto=format&fit=crop&w=800&q=80"),
@@ -96,6 +131,8 @@ RESTAURANTS = [
         image_url="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=800&q=80",
         rating="4.4",
         eta_minutes=22,
+        latitude=39.9376,
+        longitude=-74.0743,
         price_range="$",
         menu=[
             dict(category="Boardwalk Classics", name="Sausage & Peppers Slice", description="Loaded slice, sweet peppers.", price="5.99", image_emoji="🍕", image_url="https://images.unsplash.com/photo-1689793605149-8c5c4b6db1cf?auto=format&fit=crop&w=800&q=80"),
@@ -114,6 +151,8 @@ RESTAURANTS = [
         image_url="https://images.unsplash.com/photo-1717251752308-2ef72f07484e?auto=format&fit=crop&w=800&q=80",
         rating="4.8",
         eta_minutes=28,
+        latitude=40.3471,
+        longitude=-74.0643,
         price_range="$$$",
         menu=[
             dict(category="Raw Bar", name="Oysters on the Half Shell (6pc)", description="Local NJ oysters, mignonette.", price="16.99", image_emoji="🦪", image_url="https://images.unsplash.com/photo-1717251882176-acdf0d46282c?auto=format&fit=crop&w=800&q=80"),
@@ -132,6 +171,8 @@ RESTAURANTS = [
         image_url="https://images.unsplash.com/photo-1648437595587-e6a8b0cdf1f9?auto=format&fit=crop&w=800&q=80",
         rating="4.6",
         eta_minutes=24,
+        latitude=40.3043,
+        longitude=-73.9924,
         price_range="$$",
         menu=[
             dict(category="Tacos", name="Fish Tacos (3pc)", description="Beer-battered, cabbage slaw, chipotle crema.", price="13.99", image_emoji="🌮", image_url="https://images.unsplash.com/photo-1711989874705-bb85dc205541?auto=format&fit=crop&w=800&q=80"),
@@ -165,6 +206,9 @@ def main():
                 # image_url for a restaurant that was seeded before photos existed).
                 restaurant.image_url = spec.get("image_url")
                 restaurant.image_emoji = spec["image_emoji"]
+                restaurant.latitude = spec.get("latitude")
+                restaurant.longitude = spec.get("longitude")
+                restaurant.is_featured = spec.get("is_featured", False)
                 db.add(restaurant)
             else:
                 restaurant = Restaurant(
@@ -174,6 +218,9 @@ def main():
                     description=spec["description"],
                     image_emoji=spec["image_emoji"],
                     image_url=spec.get("image_url"),
+                    latitude=spec.get("latitude"),
+                    longitude=spec.get("longitude"),
+                    is_featured=spec.get("is_featured", False),
                     rating=Decimal(spec["rating"]),
                     eta_minutes=spec["eta_minutes"],
                     price_range=spec["price_range"],
