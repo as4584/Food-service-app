@@ -48,6 +48,7 @@ export default function RootLayout() {
             headerStyle: { backgroundColor: COLORS.bg },
             headerTintColor: COLORS.text,
             headerTitleStyle: { fontFamily: FONTS.display, fontSize: 18 },
+            headerBackTitle: "Back",
             headerShadowVisible: false,
             contentStyle: { backgroundColor: COLORS.bg },
           }}
