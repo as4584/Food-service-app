@@ -30,4 +30,5 @@ class MenuItem(Base, TimestampMixin):
     description = Column(String(300), nullable=True)
     price = Column(Numeric(10, 2), nullable=False)
     image_emoji = Column(String(8), nullable=True)
+    image_url = Column(String(500), nullable=True)
     is_available = Column(Boolean, nullable=False, default=True)

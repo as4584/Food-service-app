@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { getOrder, OrderResponse, ApiError } from "../../services/api";
 import { StatusStepper } from "../../components/StatusStepper";
+import { DeliveryMap } from "../../components/DeliveryMap";
 import { COLORS, RADII, SPACING } from "../../theme/tokens";
 
 const STAGE_MESSAGES: Record<string, string> = {
@@ -63,6 +64,13 @@ export default function OrderStatusScreen() {
       <Text style={styles.restaurantName}>{order.restaurant_name}</Text>
       <Text style={styles.message}>{STAGE_MESSAGES[order.stage]}</Text>
 
+      <View style={styles.mapCard}>
+        <DeliveryMap
+          atRestaurant={order.stage_index < 2}
+          progress={order.stage === "out_for_delivery" ? order.progress_in_stage : order.stage_index >= 3 ? 1 : 0}
+        />
+      </View>
+
       <View style={styles.stepperCard}>
         <StatusStepper
           stageIndex={order.stage_index}
@@ -105,6 +113,15 @@ const styles = StyleSheet.create({
   errorText: { color: COLORS.danger, fontWeight: "600" },
   restaurantName: { fontSize: 20, fontWeight: "800", color: COLORS.text },
   message: { fontSize: 14, color: COLORS.textMuted, marginTop: 4, marginBottom: SPACING.lg, fontWeight: "600" },
+  mapCard: {
+    backgroundColor: COLORS.card,
+    borderRadius: RADII.lg,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    paddingVertical: SPACING.md,
+    marginBottom: SPACING.lg,
+    alignItems: "center",
+  },
   stepperCard: {
     backgroundColor: COLORS.card,
     borderRadius: RADII.lg,

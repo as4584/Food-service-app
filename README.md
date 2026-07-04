@@ -28,6 +28,9 @@ Added this journal and a scannable QR code so the current build can be opened in
 **2026-07-04 — Real restaurant photos + faster demo pacing.**
 Replaced the emoji-only restaurant cards with real photos (sourced via web search, Unsplash License — free for commercial use, no attribution required), one per restaurant, matched to its actual cuisine. Also sped up the simulated order-status tracker from a ~6-minute cycle down to ~15 seconds end-to-end, so a live demo doesn't require standing around waiting for "Delivered" to show up.
 
+**2026-07-04 — Photos for every menu item, and a decision not to chase true 3D.**
+Sourced and verified a real, dish-matched photo (Unsplash License) for all 33 distinct menu items across the six restaurants — not just generic food stock photos, but ones that actually match each dish (e.g. a real tomato pie photo for the Jersey Tomato Pie, real oysters for the raw bar). Also explored adding a "driver en route" 3D graphic to the order-tracking screen. Before installing anything, checked compatibility of `@react-three/fiber` + `expo-gl` against this project's Expo SDK version and found documented cases of that exact combination breaking on real devices from dependency mismatches, with no confirmed compatibility info yet for the SDK version this app is on. Rather than risk a blank/crashed screen during an actual pitch, went with a 2D animated route map instead — an SVG path from restaurant to delivery address with a vehicle icon animating along it, built entirely on packages already in the project (`react-native-svg`, `react-native-reanimated`), synced to the same order-status data driving the stepper. Verified with a full typecheck and bundle export; on-device confirmation in Expo Go is still pending.
+
 ---
 
 ## Why This Exists
@@ -41,12 +44,13 @@ The near-term goal is narrow on purpose: prove the core ordering experience is g
 ## Features
 
 ### ✅ Current
-- Browse a seeded list of NJ restaurants (cuisine, rating, ETA, price range)
-- View full restaurant menus grouped by category
+- Browse a seeded list of NJ restaurants (cuisine, rating, ETA, price range), each with a real photo
+- View full restaurant menus grouped by category, with a real photo per dish (33 menu items, individually sourced to match)
 - Add/remove items and adjust quantities in a cart
 - Checkout with editable customer name and delivery address
 - Orders are created and persisted through a real backend API — not mocked on the client
-- Automatic order-status progression (Placed → Preparing → Out for Delivery → Delivered), computed from elapsed time since the order was placed
+- Automatic order-status progression (Placed → Preparing → Out for Delivery → Delivered), computed from elapsed time since the order was placed (~15 seconds end-to-end for demo pacing)
+- An animated 2D route map on the tracking screen — a vehicle icon moving from restaurant to delivery address, synced to the same order-status data
 - NJ sales tax (6.625%) and delivery fee calculated server-side
 - Runs directly in Expo Go — no custom native build required
 

@@ -59,6 +59,7 @@ export interface MenuItem {
   description: string | null;
   price: string;
   image_emoji: string | null;
+  image_url: string | null;
   is_available: boolean;
 }
 

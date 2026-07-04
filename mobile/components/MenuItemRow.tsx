@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { COLORS, RADII, SPACING } from "../theme/tokens";
 import type { MenuItem } from "../services/api";
 
@@ -16,7 +16,11 @@ export function MenuItemRow({
   return (
     <View style={styles.row}>
       <View style={styles.emojiWrap}>
-        <Text style={styles.emoji}>{item.image_emoji ?? "🍴"}</Text>
+        {item.image_url ? (
+          <Image source={{ uri: item.image_url }} style={styles.image} resizeMode="cover" />
+        ) : (
+          <Text style={styles.emoji}>{item.image_emoji ?? "🍴"}</Text>
+        )}
       </View>
       <View style={styles.info}>
         <Text style={styles.name}>{item.name}</Text>
@@ -61,7 +65,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: SPACING.sm,
+    overflow: "hidden",
   },
+  image: { width: "100%", height: "100%" },
   emoji: { fontSize: 24 },
   info: { flex: 1, marginRight: SPACING.sm },
   name: { fontSize: 15, fontWeight: "700", color: COLORS.text },

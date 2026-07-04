@@ -15,6 +15,7 @@ class MenuItemResponse(BaseModel):
     description: Optional[str] = None
     price: Decimal
     image_emoji: Optional[str] = None
+    image_url: Optional[str] = None
     is_available: bool
 
 
