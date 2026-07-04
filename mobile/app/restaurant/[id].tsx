@@ -3,6 +3,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -12,7 +13,7 @@ import { getRestaurant, RestaurantDetail, ApiError } from "../../services/api";
 import { useCart } from "../../context/CartContext";
 import { MenuItemRow } from "../../components/MenuItemRow";
 import { CartBar } from "../../components/CartBar";
-import { COLORS, SPACING } from "../../theme/tokens";
+import { COLORS, RADII, SPACING } from "../../theme/tokens";
 
 export default function RestaurantScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -84,6 +85,13 @@ export default function RestaurantScreen() {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
+        {restaurant.image_url ? (
+          <Image
+            source={{ uri: restaurant.image_url }}
+            style={styles.hero}
+            resizeMode="cover"
+          />
+        ) : null}
         <Text style={styles.name}>{restaurant.name}</Text>
         <Text style={styles.meta}>
           {restaurant.cuisine} · {restaurant.town} · ⭐ {restaurant.rating} ·{" "}
@@ -120,6 +128,13 @@ export default function RestaurantScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bg },
   scroll: { padding: SPACING.lg, paddingBottom: 100 },
+  hero: {
+    width: "100%",
+    height: 160,
+    borderRadius: RADII.lg,
+    marginBottom: SPACING.md,
+    backgroundColor: COLORS.primarySoft,
+  },
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.bg },
   errorText: { color: COLORS.danger, fontWeight: "600" },
   name: { fontSize: 24, fontWeight: "800", color: COLORS.text },

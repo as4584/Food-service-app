@@ -68,6 +68,7 @@ export interface RestaurantListItem {
   town: string;
   cuisine: string;
   image_emoji: string | null;
+  image_url: string | null;
   rating: string;
   eta_minutes: number;
   price_range: string;

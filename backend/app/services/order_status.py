@@ -18,13 +18,12 @@ class OrderStage(str, Enum):
 STAGES = [OrderStage.PLACED, OrderStage.PREPARING, OrderStage.OUT_FOR_DELIVERY, OrderStage.DELIVERED]
 
 # Seconds elapsed since created_at at which each stage begins.
-# Tuned for a live demo (~6 minutes to fully "delivered").
-# Lower these right before the pitch for a faster walkthrough if needed.
+# Tuned for a fast live demo (~15 seconds to fully "delivered").
 STAGE_THRESHOLDS_SECONDS = {
     OrderStage.PLACED: 0,
-    OrderStage.PREPARING: 45,
-    OrderStage.OUT_FOR_DELIVERY: 150,
-    OrderStage.DELIVERED: 360,
+    OrderStage.PREPARING: 4,
+    OrderStage.OUT_FOR_DELIVERY: 9,
+    OrderStage.DELIVERED: 15,
 }
 
 

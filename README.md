@@ -25,6 +25,9 @@ Uploaded the initial commit. `.env` files, the local SQLite database, and all de
 **2026-07-04 — README + live demo link.**
 Added this journal and a scannable QR code so the current build can be opened in Expo Go directly from this page.
 
+**2026-07-04 — Real restaurant photos + faster demo pacing.**
+Replaced the emoji-only restaurant cards with real photos (sourced via web search, Unsplash License — free for commercial use, no attribution required), one per restaurant, matched to its actual cuisine. Also sped up the simulated order-status tracker from a ~6-minute cycle down to ~15 seconds end-to-end, so a live demo doesn't require standing around waiting for "Delivered" to show up.
+
 ---
 
 ## Why This Exists

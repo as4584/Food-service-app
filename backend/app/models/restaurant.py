@@ -14,6 +14,7 @@ class Restaurant(Base, TimestampMixin):
     cuisine = Column(String(80), nullable=False)
     description = Column(String(500), nullable=True)
     image_emoji = Column(String(8), nullable=True)
+    image_url = Column(String(500), nullable=True)
     rating = Column(Numeric(2, 1), nullable=False, default="4.5")
     eta_minutes = Column(Integer, nullable=False, default=25)
     price_range = Column(String(4), nullable=False, default="$$")

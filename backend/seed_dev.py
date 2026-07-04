@@ -35,6 +35,7 @@ RESTAURANTS = [
         cuisine="Pizza / Italian",
         description="Wood-fired boardwalk pizza a block from the beach.",
         image_emoji="🍕",
+        image_url="https://plus.unsplash.com/premium_photo-1668771085743-1d2d19818140?auto=format&fit=crop&w=800&q=80",
         rating="4.7",
         eta_minutes=25,
         price_range="$$",
@@ -54,6 +55,7 @@ RESTAURANTS = [
         cuisine="Diner / Breakfast All-Day",
         description="Jersey diner classics served all day, every day.",
         image_emoji="🍳",
+        image_url="https://images.unsplash.com/photo-1702460831732-b75fcd58659e?auto=format&fit=crop&w=800&q=80",
         rating="4.6",
         eta_minutes=20,
         price_range="$",
@@ -72,6 +74,7 @@ RESTAURANTS = [
         cuisine="American / Seafood",
         description="Dockside tavern fare with a raw bar twist.",
         image_emoji="🦀",
+        image_url="https://images.unsplash.com/photo-1571167366136-b57e07761625?auto=format&fit=crop&w=800&q=80",
         rating="4.5",
         eta_minutes=30,
         price_range="$$",
@@ -90,6 +93,7 @@ RESTAURANTS = [
         cuisine="Pizza / Boardwalk Snacks",
         description="Everything you want on the boardwalk, on one menu.",
         image_emoji="🎡",
+        image_url="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=800&q=80",
         rating="4.4",
         eta_minutes=22,
         price_range="$",
@@ -107,6 +111,7 @@ RESTAURANTS = [
         cuisine="Seafood / Raw Bar",
         description="Navesink River seafood, oysters shucked to order.",
         image_emoji="🦪",
+        image_url="https://images.unsplash.com/photo-1717251752308-2ef72f07484e?auto=format&fit=crop&w=800&q=80",
         rating="4.8",
         eta_minutes=28,
         price_range="$$$",
@@ -124,6 +129,7 @@ RESTAURANTS = [
         cuisine="Mexican / Beach Fusion",
         description="Beachside tacos with a Jersey Shore twist.",
         image_emoji="🌮",
+        image_url="https://images.unsplash.com/photo-1648437595587-e6a8b0cdf1f9?auto=format&fit=crop&w=800&q=80",
         rating="4.6",
         eta_minutes=24,
         price_range="$$",
@@ -155,6 +161,11 @@ def main():
         for spec in RESTAURANTS:
             if spec["name"] in existing_names:
                 restaurant = db.query(Restaurant).filter(Restaurant.name == spec["name"]).first()
+                # Sync fields that are safe to update in place (e.g. a newly-added
+                # image_url for a restaurant that was seeded before photos existed).
+                restaurant.image_url = spec.get("image_url")
+                restaurant.image_emoji = spec["image_emoji"]
+                db.add(restaurant)
             else:
                 restaurant = Restaurant(
                     name=spec["name"],
@@ -162,6 +173,7 @@ def main():
                     cuisine=spec["cuisine"],
                     description=spec["description"],
                     image_emoji=spec["image_emoji"],
+                    image_url=spec.get("image_url"),
                     rating=Decimal(spec["rating"]),
                     eta_minutes=spec["eta_minutes"],
                     price_range=spec["price_range"],

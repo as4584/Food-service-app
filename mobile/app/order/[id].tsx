@@ -35,7 +35,7 @@ export default function OrderStatusScreen() {
     };
 
     fetchOrder();
-    intervalRef.current = setInterval(fetchOrder, 3000);
+    intervalRef.current = setInterval(fetchOrder, 1000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);

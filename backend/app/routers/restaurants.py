@@ -37,6 +37,7 @@ def get_restaurant(restaurant_id: UUID, db: Session = Depends(get_db)):
         town=restaurant.town,
         cuisine=restaurant.cuisine,
         image_emoji=restaurant.image_emoji,
+        image_url=restaurant.image_url,
         rating=restaurant.rating,
         eta_minutes=restaurant.eta_minutes,
         price_range=restaurant.price_range,

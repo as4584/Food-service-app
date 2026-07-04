@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { COLORS, RADII, SPACING } from "../theme/tokens";
 import type { RestaurantListItem } from "../services/api";
 
@@ -11,8 +11,17 @@ export function RestaurantCard({
 }) {
   return (
     <Pressable style={styles.card} onPress={onPress}>
-      <View style={styles.emojiWrap}>
-        <Text style={styles.emoji}>{restaurant.image_emoji ?? "🍽️"}</Text>
+      <View style={styles.imageWrap}>
+        {restaurant.image_url ? (
+          <Image source={{ uri: restaurant.image_url }} style={styles.image} resizeMode="cover" />
+        ) : (
+          <Text style={styles.emoji}>{restaurant.image_emoji ?? "🍽️"}</Text>
+        )}
+        {restaurant.image_url && restaurant.image_emoji ? (
+          <View style={styles.emojiBadge}>
+            <Text style={styles.emojiBadgeText}>{restaurant.image_emoji}</Text>
+          </View>
+        ) : null}
       </View>
       <View style={styles.info}>
         <Text style={styles.name} numberOfLines={1}>
@@ -44,7 +53,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     alignItems: "center",
   },
-  emojiWrap: {
+  imageWrap: {
     width: 64,
     height: 64,
     borderRadius: RADII.md,
@@ -52,8 +61,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: SPACING.md,
+    overflow: "hidden",
   },
+  image: { width: "100%", height: "100%" },
   emoji: { fontSize: 32 },
+  emojiBadge: {
+    position: "absolute",
+    bottom: -2,
+    right: -2,
+    width: 22,
+    height: 22,
+    borderRadius: RADII.pill,
+    backgroundColor: COLORS.bgElevated,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emojiBadgeText: { fontSize: 12 },
   info: { flex: 1 },
   name: { fontSize: 17, fontWeight: "700", color: COLORS.text },
   cuisine: { fontSize: 13, color: COLORS.textMuted, marginTop: 2 },
