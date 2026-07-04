@@ -20,8 +20,8 @@ test.describe("App boot", () => {
 
     await page.goto("/");
 
-    await expect(page.getByText("Shore Eats", { exact: true })).toBeVisible();
-    await expect(page.getByText("Jersey Shore eats, delivered", { exact: false })).toBeVisible();
+    await expect(page.getByText("North Jersey Eats", { exact: true })).toBeVisible();
+    await expect(page.getByText("The best local restaurants in one place.", { exact: false })).toBeVisible();
 
     // The restaurant list resolves to *something* — real cards if a backend is
     // reachable, or the visible error message if not. Either is fine here; a

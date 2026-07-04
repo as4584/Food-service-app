@@ -47,8 +47,8 @@ export default function RestaurantListScreen() {
         <View pointerEvents="none" style={styles.glowBlobLarge} />
         <View pointerEvents="none" style={styles.glowBlobSmall} />
         <View style={styles.headerContent}>
-          <Text style={styles.title}>Shore Eats</Text>
-          <Text style={styles.subtitle}>Jersey Shore eats, delivered 🌊</Text>
+          <Text style={styles.title}>North Jersey Eats</Text>
+          <Text style={styles.subtitle}>The best local restaurants in one place.</Text>
         </View>
         <Glimmer />
       </LinearGradient>
