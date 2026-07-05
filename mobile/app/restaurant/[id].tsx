@@ -16,12 +16,15 @@ import { getRestaurant, RestaurantDetail, ApiError } from "../../services/api";
 import { useCart } from "../../context/CartContext";
 import { MenuItemRow } from "../../components/MenuItemRow";
 import { CartBar } from "../../components/CartBar";
+import { useUserLocation } from "../../context/LocationContext";
+import { haversineMiles, formatMiles } from "../../utils/distance";
 import { COLORS, FONTS, GRADIENTS, RADII, SHADOWS, SPACING } from "../../theme/tokens";
 
 export default function RestaurantScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const cart = useCart();
+  const { coords } = useUserLocation();
   const [restaurant, setRestaurant] = useState<RestaurantDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,13 +52,20 @@ export default function RestaurantScreen() {
           {
             text: "Start New Order",
             style: "destructive",
-            onPress: () => cart.addItem(restaurant.id, restaurant.name, item),
+            onPress: () =>
+              cart.addItem(restaurant.id, restaurant.name, item, {
+                lat: restaurant.latitude,
+                lng: restaurant.longitude,
+              }),
           },
         ]
       );
       return;
     }
-    cart.addItem(restaurant.id, restaurant.name, item);
+    cart.addItem(restaurant.id, restaurant.name, item, {
+      lat: restaurant.latitude,
+      lng: restaurant.longitude,
+    });
   };
 
   if (loading) {
@@ -85,6 +95,11 @@ export default function RestaurantScreen() {
   const quantityFor = (menuItemId: string) =>
     cart.lines.find((l) => l.menuItem.id === menuItemId)?.quantity ?? 0;
 
+  const distanceMi =
+    coords && restaurant.latitude != null && restaurant.longitude != null
+      ? haversineMiles(coords.latitude, coords.longitude, restaurant.latitude, restaurant.longitude)
+      : null;
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -99,6 +114,7 @@ export default function RestaurantScreen() {
         <Text style={styles.meta}>
           {restaurant.cuisine} · {restaurant.town} · ⭐ {restaurant.rating} ·{" "}
           {restaurant.eta_minutes} min
+          {distanceMi != null ? ` · 📍 ${formatMiles(distanceMi)}` : ""}
         </Text>
         {restaurant.description ? (
           <Text style={styles.description}>{restaurant.description}</Text>

@@ -6,11 +6,22 @@ export interface CartLine {
   quantity: number;
 }
 
+export interface RestaurantCoords {
+  lat: number | null;
+  lng: number | null;
+}
+
 interface CartState {
   restaurantId: string | null;
   restaurantName: string | null;
+  restaurantCoords: RestaurantCoords | null;
   lines: CartLine[];
-  addItem: (restaurantId: string, restaurantName: string, item: MenuItem) => void;
+  addItem: (
+    restaurantId: string,
+    restaurantName: string,
+    item: MenuItem,
+    coords?: RestaurantCoords
+  ) => void;
   removeItem: (menuItemId: string) => void;
   setQuantity: (menuItemId: string, quantity: number) => void;
   clearCart: () => void;
@@ -23,14 +34,16 @@ const CartContext = createContext<CartState | null>(null);
 export function CartProvider({ children }: { children: ReactNode }) {
   const [restaurantId, setRestaurantId] = useState<string | null>(null);
   const [restaurantName, setRestaurantName] = useState<string | null>(null);
+  const [restaurantCoords, setRestaurantCoords] = useState<RestaurantCoords | null>(null);
   const [lines, setLines] = useState<CartLine[]>([]);
 
-  const addItem = (rId: string, rName: string, item: MenuItem) => {
+  const addItem = (rId: string, rName: string, item: MenuItem, coords?: RestaurantCoords) => {
     if (restaurantId && restaurantId !== rId) {
       setLines([]);
     }
     setRestaurantId(rId);
     setRestaurantName(rName);
+    setRestaurantCoords(coords ?? null);
     setLines((prev) => {
       const base = restaurantId && restaurantId !== rId ? [] : prev;
       const existing = base.find((l) => l.menuItem.id === item.id);
@@ -57,6 +70,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setLines([]);
     setRestaurantId(null);
     setRestaurantName(null);
+    setRestaurantCoords(null);
   };
 
   const subtotal = useMemo(
@@ -70,6 +84,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       value={{
         restaurantId,
         restaurantName,
+        restaurantCoords,
         lines,
         addItem,
         removeItem,
