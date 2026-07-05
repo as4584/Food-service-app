@@ -15,12 +15,15 @@ import { listRestaurants, RestaurantListItem, ApiError } from "../services/api";
 import { SpinWheel, SpinWheelHandle } from "../components/SpinWheel";
 import { Confetti } from "../components/Confetti";
 import { RestaurantCard } from "../components/RestaurantCard";
+import { useUserLocation } from "../context/LocationContext";
+import { haversineMiles } from "../utils/distance";
 import { WheelCategory } from "../theme/categories";
 import { BRAND, COLORS, FONTS, GRADIENTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
 
 export default function SpinScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
+  const { coords } = useUserLocation();
   const wheelRef = useRef<SpinWheelHandle>(null);
 
   const [restaurants, setRestaurants] = useState<RestaurantListItem[]>([]);
@@ -52,7 +55,15 @@ export default function SpinScreen() {
     setFireKey((k) => k + 1);
   }, []);
 
-  const matches = landed ? restaurants.filter((r) => r.category === landed.key) : [];
+  const matches = (landed ? restaurants.filter((r) => r.category === landed.key) : [])
+    .map((r) => ({
+      ...r,
+      distanceMi:
+        coords && r.latitude != null && r.longitude != null
+          ? haversineMiles(coords.latitude, coords.longitude, r.latitude, r.longitude)
+          : undefined,
+    }))
+    .sort((a, b) => (a.distanceMi ?? Infinity) - (b.distanceMi ?? Infinity));
   const wheelSize = Math.min(340, width - SPACING.lg * 2);
 
   return (
@@ -94,6 +105,7 @@ export default function SpinScreen() {
               <RestaurantCard
                 key={item.id}
                 restaurant={item}
+                distanceMi={item.distanceMi}
                 onPress={() => router.push(`/restaurant/${item.id}`)}
               />
             ))}

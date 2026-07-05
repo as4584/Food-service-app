@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useFocusEffect, useRouter } from "expo-router";
 import {
   ActivityIndicator,
@@ -13,14 +13,36 @@ import { LinearGradient } from "expo-linear-gradient";
 import { listRestaurants, RestaurantListItem, ApiError } from "../services/api";
 import { RestaurantCard } from "../components/RestaurantCard";
 import { Glimmer } from "../components/Glimmer";
+import { useUserLocation } from "../context/LocationContext";
+import { haversineMiles } from "../utils/distance";
 import { COLORS, FONTS, GRADIENTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
+
+type WithDistance = RestaurantListItem & { distanceMi?: number };
 
 export default function RestaurantListScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { coords } = useUserLocation();
   const [restaurants, setRestaurants] = useState<RestaurantListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // When we have the user's location, show distances and sort nearest-first —
+  // but keep the featured restaurant (Master Pizza) pinned to the top.
+  const ordered = useMemo<WithDistance[]>(() => {
+    if (!coords) return restaurants;
+    const withDistance: WithDistance[] = restaurants.map((r) => ({
+      ...r,
+      distanceMi:
+        r.latitude != null && r.longitude != null
+          ? haversineMiles(coords.latitude, coords.longitude, r.latitude, r.longitude)
+          : undefined,
+    }));
+    return withDistance.sort((a, b) => {
+      if (a.is_featured !== b.is_featured) return a.is_featured ? -1 : 1;
+      return (a.distanceMi ?? Infinity) - (b.distanceMi ?? Infinity);
+    });
+  }, [restaurants, coords]);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -64,7 +86,7 @@ export default function RestaurantListScreen() {
         </View>
       ) : (
         <FlatList
-          data={restaurants}
+          data={ordered}
           keyExtractor={(r) => r.id}
           contentContainerStyle={styles.list}
           ListHeaderComponent={
@@ -92,6 +114,7 @@ export default function RestaurantListScreen() {
           renderItem={({ item }) => (
             <RestaurantCard
               restaurant={item}
+              distanceMi={item.distanceMi}
               onPress={() => router.push(`/restaurant/${item.id}`)}
             />
           )}

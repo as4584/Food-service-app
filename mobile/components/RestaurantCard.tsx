@@ -1,14 +1,17 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { COLORS, FONTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
+import { BRAND, COLORS, FONTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
+import { formatMiles } from "../utils/distance";
 import type { RestaurantListItem } from "../services/api";
 
 export function RestaurantCard({
   restaurant,
   onPress,
+  distanceMi,
 }: {
   restaurant: RestaurantListItem;
   onPress: () => void;
+  distanceMi?: number;
 }) {
   return (
     <Pressable
@@ -45,9 +48,15 @@ export function RestaurantCard({
           <View style={styles.metaChip}>
             <Text style={styles.meta}>⭐ {restaurant.rating}</Text>
           </View>
-          <View style={styles.metaChip}>
-            <Text style={styles.meta}>{restaurant.eta_minutes} min</Text>
-          </View>
+          {distanceMi != null && isFinite(distanceMi) ? (
+            <View style={[styles.metaChip, styles.distanceChip]}>
+              <Text style={[styles.meta, styles.distanceText]}>📍 {formatMiles(distanceMi)}</Text>
+            </View>
+          ) : (
+            <View style={styles.metaChip}>
+              <Text style={styles.meta}>{restaurant.eta_minutes} min</Text>
+            </View>
+          )}
           <View style={styles.metaChip}>
             <Text style={styles.meta}>{restaurant.price_range}</Text>
           </View>
@@ -106,4 +115,6 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   meta: { fontSize: 11.5, color: COLORS.ocean, fontFamily: FONTS.bodyBold },
+  distanceChip: { backgroundColor: COLORS.primarySoft },
+  distanceText: { color: BRAND.deepGreen },
 });

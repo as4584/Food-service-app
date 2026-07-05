@@ -17,6 +17,7 @@ import {
   Inter_800ExtraBold,
 } from "@expo-google-fonts/inter";
 import { CartProvider } from "../context/CartContext";
+import { LocationProvider } from "../context/LocationContext";
 import { BrandLoadingScreen } from "../components/BrandLoadingScreen";
 import { COLORS, FONTS } from "../theme/tokens";
 
@@ -59,6 +60,7 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider onLayout={onLayout}>
+      <LocationProvider>
       <CartProvider>
         <StatusBar style="dark" />
         <Stack
@@ -83,6 +85,7 @@ export default function RootLayout() {
         </Stack>
         {!brandDone && <BrandLoadingScreen />}
       </CartProvider>
+      </LocationProvider>
     </SafeAreaProvider>
   );
 }
