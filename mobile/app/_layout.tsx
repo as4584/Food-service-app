@@ -72,6 +72,7 @@ export default function RootLayout() {
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="spin" options={{ title: "Spin the Wheel" }} />
           <Stack.Screen name="restaurant/[id]" options={{ title: "" }} />
           <Stack.Screen name="cart" options={{ title: "Your Cart" }} />
           <Stack.Screen name="checkout" options={{ title: "Checkout" }} />

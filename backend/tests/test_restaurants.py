@@ -46,3 +46,12 @@ def test_detail_includes_menu_items(client, seeded_restaurant):
 def test_detail_404_for_unknown_id(client):
     response = client.get("/api/v1/restaurants/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404
+
+
+def test_list_exposes_category(client, seeded_restaurant):
+    """The wheel/mood category must reach the client via the list endpoint."""
+    restaurant, _ = seeded_restaurant
+    response = client.get("/api/v1/restaurants")
+    assert response.status_code == 200
+    item = next(r for r in response.json() if r["id"] == str(restaurant.id))
+    assert item["category"] == "pizza"

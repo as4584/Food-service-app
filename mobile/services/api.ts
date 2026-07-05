@@ -71,6 +71,7 @@ export interface RestaurantListItem {
   image_emoji: string | null;
   image_url: string | null;
   website_url: string | null;
+  category: string | null;
   rating: string;
   eta_minutes: number;
   price_range: string;

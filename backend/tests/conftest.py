@@ -48,6 +48,7 @@ def seeded_restaurant(client, db_session):
         image_emoji="🍕",
         image_url="https://example.com/pizza.jpg",
         website_url="https://example.com/",
+        category="pizza",
         rating=Decimal("4.5"),
         eta_minutes=20,
         price_range="$$",

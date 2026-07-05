@@ -3,6 +3,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -66,6 +67,28 @@ export default function RestaurantListScreen() {
           data={restaurants}
           keyExtractor={(r) => r.id}
           contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            <Pressable
+              style={({ pressed }) => [styles.spinCta, pressed && styles.spinCtaPressed]}
+              onPress={() => router.push("/spin")}
+            >
+              <LinearGradient
+                colors={GRADIENTS.sunset}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.spinBadge}
+              >
+                <Text style={styles.spinBadgeEmoji}>🎡</Text>
+              </LinearGradient>
+              <View style={styles.spinCtaText}>
+                <Text style={styles.spinCtaTitle}>Feeling lucky?</Text>
+                <Text style={styles.spinCtaSub}>Spin the wheel to find your next meal</Text>
+              </View>
+              <View style={styles.spinPill}>
+                <Text style={styles.spinPillText}>Spin</Text>
+              </View>
+            </Pressable>
+          }
           renderItem={({ item }) => (
             <RestaurantCard
               restaurant={item}
@@ -117,4 +140,34 @@ const styles = StyleSheet.create({
   list: { padding: SPACING.lg, paddingBottom: SPACING.xl },
   center: { flex: 1, alignItems: "center", justifyContent: "center", padding: SPACING.lg },
   errorText: { color: COLORS.danger, textAlign: "center", fontFamily: FONTS.bodySemiBold },
+  spinCta: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.card,
+    borderRadius: RADII.lg,
+    padding: SPACING.sm + 2,
+    marginBottom: SPACING.md,
+    ...SHADOWS.card,
+  },
+  spinCtaPressed: { opacity: 0.92, transform: [{ scale: 0.99 }] },
+  spinBadge: {
+    width: 52,
+    height: 52,
+    borderRadius: RADII.md,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: SPACING.sm,
+  },
+  spinBadgeEmoji: { fontSize: 28 },
+  spinCtaText: { flex: 1 },
+  spinCtaTitle: { fontSize: 16, fontFamily: FONTS.displayBold, color: COLORS.text },
+  spinCtaSub: { fontSize: 12.5, color: COLORS.textMuted, fontFamily: FONTS.body, marginTop: 1 },
+  spinPill: {
+    backgroundColor: COLORS.primary,
+    borderRadius: RADII.pill,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginLeft: SPACING.sm,
+  },
+  spinPillText: { color: "#FFFFFF", fontFamily: FONTS.bodyExtraBold, fontSize: 13 },
 });
