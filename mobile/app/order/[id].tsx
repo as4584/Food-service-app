@@ -4,13 +4,17 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { getOrder, OrderResponse, ApiError } from "../../services/api";
 import { StatusStepper } from "../../components/StatusStepper";
 import { DeliveryMap } from "../../components/DeliveryMap";
-import { COLORS, RADII, SPACING } from "../../theme/tokens";
+import { BRAND, COLORS, RADII, SPACING } from "../../theme/tokens";
+
+// Illustrative marketplace commission (DoorDash/Uber Eats/Grubhub run 15–30%);
+// used to show the owner how much of each order stays with the restaurant.
+const MARKETPLACE_COMMISSION = 0.3;
 
 const STAGE_MESSAGES: Record<string, string> = {
   placed: "Your order has been sent to the restaurant.",
   preparing: "The kitchen is preparing your order.",
   out_for_delivery: "Your order is on its way!",
-  delivered: "Enjoy your Jersey Shore meal! 🌊",
+  delivered: "Enjoy your meal — thanks for ordering local!",
 };
 
 export default function OrderStatusScreen() {
@@ -64,6 +68,21 @@ export default function OrderStatusScreen() {
       <Text style={styles.restaurantName}>{order.restaurant_name}</Text>
       <Text style={styles.message}>{STAGE_MESSAGES[order.stage]}</Text>
 
+      <View style={styles.savingsCard}>
+        <View style={styles.savingsCheck}>
+          <Text style={styles.savingsCheckMark}>✓</Text>
+        </View>
+        <View style={styles.savingsTextWrap}>
+          <Text style={styles.savingsTitle}>You ordered direct</Text>
+          <Text style={styles.savingsBody}>
+            <Text style={styles.savingsAmount}>
+              ${(Number(order.subtotal) * MARKETPLACE_COMMISSION).toFixed(2)}
+            </Text>{" "}
+            of this order stays with {order.restaurant_name} — not a delivery app.
+          </Text>
+        </View>
+      </View>
+
       <View style={styles.mapCard}>
         <DeliveryMap
           restaurantLat={order.restaurant_latitude}
@@ -114,7 +133,31 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.bg, padding: SPACING.lg },
   errorText: { color: COLORS.danger, fontWeight: "600" },
   restaurantName: { fontSize: 20, fontWeight: "800", color: COLORS.text },
-  message: { fontSize: 14, color: COLORS.textMuted, marginTop: 4, marginBottom: SPACING.lg, fontWeight: "600" },
+  message: { fontSize: 14, color: COLORS.textMuted, marginTop: 4, marginBottom: SPACING.md, fontWeight: "600" },
+  savingsCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.primarySoft,
+    borderRadius: RADII.md,
+    borderWidth: 1,
+    borderColor: "rgba(15,61,46,0.14)",
+    padding: SPACING.md,
+    marginBottom: SPACING.lg,
+  },
+  savingsCheck: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: BRAND.deepGreen,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: SPACING.sm,
+  },
+  savingsCheckMark: { color: BRAND.cream, fontSize: 18, fontWeight: "800", lineHeight: 21 },
+  savingsTextWrap: { flex: 1 },
+  savingsTitle: { fontSize: 14, fontWeight: "800", color: BRAND.deepGreen, marginBottom: 2 },
+  savingsBody: { fontSize: 12.5, color: COLORS.textMuted, lineHeight: 17 },
+  savingsAmount: { color: BRAND.njRed, fontWeight: "800" },
   mapCard: {
     backgroundColor: COLORS.card,
     borderRadius: RADII.lg,

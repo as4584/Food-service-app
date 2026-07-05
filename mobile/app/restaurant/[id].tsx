@@ -175,9 +175,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   websiteBannerText: { flex: 1, marginRight: SPACING.sm },
-  websiteBannerTitle: { color: "#FFFFFF", fontFamily: FONTS.bodyBold, fontSize: 14 },
-  websiteBannerSubtitle: { color: "#E3F6FC", fontFamily: FONTS.body, fontSize: 12, marginTop: 2 },
-  websiteBannerArrow: { color: "#FFFFFF", fontSize: 20, fontFamily: FONTS.bodyBold },
+  websiteBannerTitle: { color: "#0F3D2E", fontFamily: FONTS.bodyBold, fontSize: 14 },
+  websiteBannerSubtitle: { color: "rgba(15,61,46,0.72)", fontFamily: FONTS.body, fontSize: 12, marginTop: 2 },
+  websiteBannerArrow: { color: "#0F3D2E", fontSize: 20, fontFamily: FONTS.bodyBold },
   section: { marginTop: SPACING.lg },
   sectionTitle: {
     fontSize: 17,

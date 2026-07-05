@@ -11,29 +11,32 @@ export const BRAND = {
   nearBlack: "#1A1A1A",
 };
 
+// Aligned to the NJ Eats brand (see BRAND above): cream surfaces, deep-green
+// structure/text, red for calls to action, gold for premium accents. Token
+// names are unchanged so every screen re-skins from this one edit.
 export const COLORS = {
-  bg: "#FDF6E9",
+  bg: "#F7F3EC", // brand cream
   bgElevated: "#FFFFFF",
   card: "#FFFFFF",
-  cardAlt: "#FFF9EF",
-  border: "#F0E4CC",
-  text: "#1B3A4B",
-  textMuted: "#5D7A8C",
-  textSoft: "#8FA6B3",
-  primary: "#FF6F3C",
-  primaryBright: "#FF8A5C",
-  primarySoft: "#FFE3D6",
-  ocean: "#1C7C9C",
+  cardAlt: "#F1EDE1", // soft cream
+  border: "#E6DECF",
+  text: "#14352A", // deep green-black (headings + body)
+  textMuted: "#5E6E64",
+  textSoft: "#94A099",
+  primary: "#0F3D2E", // deep green — spinners, progress, secondary surfaces
+  primaryBright: "#1B5E45",
+  primarySoft: "#E4EDE7", // soft green tint (image placeholders)
+  ocean: "#0F3D2E", // (kept name) deep green accent for prices/meta
   success: "#2FA86C",
-  warning: "#F5B942",
-  danger: "#E0563E",
+  warning: "#C8A96B", // brand gold
+  danger: "#C0392B",
   glimmer: "rgba(255, 255, 255, 0.55)",
 };
 
 export const GRADIENTS = {
-  sunset: ["#FFB25C", "#FF8A5C", "#FF6636"] as const,
-  ocean: ["#3FB6D3", "#1C7C9C"] as const,
-  primaryButton: ["#FF8A5C", "#FF6636"] as const,
+  sunset: ["#1E6A4E", "#0F3D2E"] as const, // deep-green header
+  ocean: ["#D2B679", "#C8A96B"] as const, // gold — the "visit website" banner
+  primaryButton: ["#E5433C", "#D62828"] as const, // brand red — CTAs
 };
 
 export const FONTS = {
@@ -59,14 +62,14 @@ export const SHADOWS = {
     elevation: 3,
   },
   button: {
-    shadowColor: "#FF6636",
-    shadowOpacity: 0.35,
+    shadowColor: "#D62828",
+    shadowOpacity: 0.32,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 6 },
     elevation: 6,
   },
   header: {
-    shadowColor: "#FF6636",
+    shadowColor: "#0F3D2E",
     shadowOpacity: 0.25,
     shadowRadius: 20,
     shadowOffset: { width: 0, height: 10 },
