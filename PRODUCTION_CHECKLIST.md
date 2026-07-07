@@ -99,15 +99,21 @@ Last updated: 2026-07-07
 
 ## 9. Mobile release
 
-- [ ] EAS Build config for iOS + Android production builds
+- [x] `eas.json` build profiles (development / preview / production)
+- [x] iOS location permission string + non-exempt-encryption flag (app.json)
+- [x] Android location permissions declared
+- [ ] `eas init` + link an EAS project (needs Expo login — Alex)
+- [ ] First production iOS build (`eas build -p ios --profile production`)
 - [ ] App Store + Play Store listings (screenshots, copy, privacy labels)
-- [ ] Apple/Google developer accounts + signing
+- [ ] Apple/Google developer accounts + signing (needs Alex)
 - [ ] Over-the-air update channel (EAS Update)
 - [ ] Deep links / universal links
 
 ## 10. Legal / trust / business
 
-- [ ] Privacy policy + terms of service
+- [x] Privacy policy page (`docs/legal/privacy.html` — host on lexmakesit.com)
+- [x] Support page (`docs/legal/support.html`) — App Store requires a support URL
+- [ ] Terms of service
 - [ ] Restaurant merchant agreement + commission terms
 - [ ] Driver contractor agreement
 - [ ] Food-handling / liability disclaimers
@@ -122,6 +128,64 @@ Last updated: 2026-07-07
 - [ ] End-to-end test across customer → merchant → driver
 - [ ] Load test on order creation
 - [ ] Accessibility pass on the customer app
+
+---
+
+---
+
+## Reference: Enatega (open-source multivendor) — what we take, what we don't
+
+`github.com/enatega/food-delivery-multivendor` is the same architecture we're
+building (customer app, restaurant app, rider app — all React Native/Expo — plus
+an admin dashboard and a customer web app). It validates our direction.
+
+**Decision (ordo):** its *frontend* is MIT, but its **backend is proprietary/paid**
+(Node + Express + **GraphQL** + **MongoDB**). We already have a working **FastAPI**
+backend, so we do **not** adopt theirs — we'd be paying for a black box or
+rebuilding what we have. Instead we borrow their **MIT frontend patterns** and the
+specific libraries a food app needs for the store:
+
+- `expo-notifications` (+ Firebase) — push for new orders / status
+- `@stripe/stripe-react-native` — card payments
+- Google Places autocomplete — real, geocoded delivery addresses
+- `expo-auth-session` — OAuth incl. **Sign in with Apple** (App Store 4.8)
+- `@sentry/react-native` — crash/error reporting
+
+Do not copy their code wholesale into our repo (licensing + backend mismatch);
+use it as a reference implementation.
+
+---
+
+## App Store 2-day sprint (goal: submittable build)
+
+Ordo note: after every change run the gate — backend `pytest`, mobile `tsc` +
+`expo export` + Playwright smoke — before moving on. That's what keeps features
+from breaking each other.
+
+### Blockers only Alex can unblock (needed before actual submission)
+- [ ] Apple Developer Program account ($99/yr) + App Store Connect app record
+- [ ] Expo account login for `eas init` / `eas build`
+- [ ] A host for the API (Fly.io / Render / Railway / the existing droplet) + a
+      managed Postgres — **Apple's reviewers must reach a real server, not a
+      laptop tunnel.** This is the #1 hard blocker.
+- [ ] Stripe account + keys (store in Doppler)
+- [ ] Point `privacy.html` / `support.html` at real URLs on lexmakesit.com
+
+### Day 1 — make it real (code side, no external creds)
+- [x] Real order lifecycle + merchant/driver apps + new-order alert
+- [x] iOS/Android permission config + eas.json + privacy/support pages
+- [ ] Config-driven API base URL + a `staging`/`prod` switch (no hardcoded tunnel)
+- [ ] `expo-notifications`: register push token, store on backend, send on new order
+- [ ] Lightweight auth: phone/email for merchant + driver (customer stays guest v1)
+- [ ] Postgres-compatible models verified (no SQLite-only assumptions)
+
+### Day 2 — build, harden, submit
+- [ ] Stripe checkout (test mode) end-to-end
+- [ ] Sentry wired (backend + mobile)
+- [ ] `eas build -p ios --profile production` → TestFlight
+- [ ] App Store listing: screenshots (have brand), description, privacy labels
+- [ ] Reviewer demo account + notes (guest customer + how to reach merchant view)
+- [ ] Final gate green, submit for review
 
 ---
 
