@@ -7,6 +7,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useAudioPlayer, setAudioModeAsync } from "expo-audio";
 import {
   listRestaurants,
   listOrders,
@@ -33,7 +34,45 @@ export default function MerchantScreen() {
   const [orders, setOrders] = useState<OrderResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [banner, setBanner] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const bannerTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Track which pending orders we've already seen so a genuinely new one can
+  // ring the chime. `seeded` guards the very first poll (so the whole existing
+  // queue doesn't trigger an alert the moment the screen opens).
+  const seenPendingIds = useRef<Set<string>>(new Set());
+  const seeded = useRef(false);
+  const chime = useAudioPlayer(require("../../assets/sounds/neworder.wav"));
+
+  useEffect(() => {
+    setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
+  }, []);
+
+  const announceNewOrders = useCallback(
+    (next: OrderResponse[]) => {
+      const pending = next.filter((o) => o.status === "pending");
+      const ids = new Set(pending.map((o) => o.id));
+      if (!seeded.current) {
+        seenPendingIds.current = ids;
+        seeded.current = true;
+        return;
+      }
+      const fresh = pending.filter((o) => !seenPendingIds.current.has(o.id));
+      seenPendingIds.current = ids;
+      if (fresh.length === 0) return;
+      try {
+        chime.seekTo(0);
+        chime.play();
+      } catch {
+        // sound is a no-op on web / if the asset can't load; the banner still shows
+      }
+      const name = fresh[0].customer_name || "a customer";
+      setBanner(fresh.length === 1 ? `New order from ${name}` : `${fresh.length} new orders came in`);
+      if (bannerTimer.current) clearTimeout(bannerTimer.current);
+      bannerTimer.current = setTimeout(() => setBanner(null), 5000);
+    },
+    [chime]
+  );
 
   // Load the restaurant roster once; default to the featured restaurant.
   useEffect(() => {
@@ -50,19 +89,30 @@ export default function MerchantScreen() {
   const refresh = useCallback(() => {
     if (!selectedId) return;
     listOrders({ restaurantId: selectedId, limit: 50 })
-      .then(setOrders)
+      .then((next) => {
+        announceNewOrders(next);
+        setOrders(next);
+      })
       .catch(() => {});
-  }, [selectedId]);
+  }, [selectedId, announceNewOrders]);
 
-  // Poll the selected restaurant's orders.
+  // Poll the selected restaurant's orders. Switching restaurants re-seeds the
+  // "seen" set so we don't chime for the incoming restaurant's existing queue.
   useEffect(() => {
     if (!selectedId) return;
+    seeded.current = false;
+    seenPendingIds.current = new Set();
     refresh();
     pollRef.current = setInterval(refresh, POLL_MS);
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, [selectedId, refresh]);
+
+  // Clean up the banner timer on unmount.
+  useEffect(() => () => {
+    if (bannerTimer.current) clearTimeout(bannerTimer.current);
+  }, []);
 
   const act = async (fn: () => Promise<OrderResponse>, id: string) => {
     setBusyId(id);
@@ -103,6 +153,12 @@ export default function MerchantScreen() {
           <Text style={styles.liveText}>Live order feed</Text>
         </View>
       </View>
+
+      {banner ? (
+        <View style={styles.banner}>
+          <Text style={styles.bannerText}>{banner}</Text>
+        </View>
+      ) : null}
 
       {restaurants.length > 1 ? (
         <ScrollView
@@ -212,6 +268,16 @@ const styles = StyleSheet.create({
   liveRow: { flexDirection: "row", alignItems: "center", marginTop: 2 },
   liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.success, marginRight: 6 },
   liveText: { fontSize: 12, color: COLORS.textMuted, fontFamily: FONTS.bodySemiBold },
+  banner: {
+    backgroundColor: BRAND.deepGreen,
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.xs,
+    borderRadius: RADII.md,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+    ...SHADOWS.card,
+  },
+  bannerText: { color: "#FFFFFF", fontFamily: FONTS.bodyExtraBold, fontSize: 14, textAlign: "center" },
   chipsRow: { flexGrow: 0, marginTop: SPACING.xs },
   chipsContent: { paddingHorizontal: SPACING.lg, gap: SPACING.xs },
   chip: {
