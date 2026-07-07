@@ -10,11 +10,14 @@ import { BRAND, COLORS, RADII, SPACING } from "../../theme/tokens";
 // used to show the owner how much of each order stays with the restaurant.
 const MARKETPLACE_COMMISSION = 0.3;
 
-const STAGE_MESSAGES: Record<string, string> = {
-  placed: "Your order has been sent to the restaurant.",
+const STATUS_MESSAGES: Record<string, string> = {
+  pending: "Your order has been sent to the restaurant.",
+  accepted: "The restaurant accepted your order.",
   preparing: "The kitchen is preparing your order.",
+  ready: "Your order is packed and ready for a driver.",
   out_for_delivery: "Your order is on its way!",
   delivered: "Enjoy your meal — thanks for ordering local!",
+  rejected: "The restaurant couldn't take this order.",
 };
 
 export default function OrderStatusScreen() {
@@ -63,10 +66,31 @@ export default function OrderStatusScreen() {
     );
   }
 
+  if (order.rejected) {
+    return (
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.restaurantName}>{order.restaurant_name}</Text>
+        <View style={styles.rejectedCard}>
+          <Text style={styles.rejectedTitle}>Order declined</Text>
+          <Text style={styles.rejectedBody}>
+            {order.rejected_reason ||
+              "The restaurant can't take this order right now. You haven't been charged."}
+          </Text>
+        </View>
+        <Pressable style={styles.againBtn} onPress={() => router.replace("/")}>
+          <Text style={styles.againBtnText}>Find another spot</Text>
+        </Pressable>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.content}>
       <Text style={styles.restaurantName}>{order.restaurant_name}</Text>
-      <Text style={styles.message}>{STAGE_MESSAGES[order.stage]}</Text>
+      <Text style={styles.message}>{STATUS_MESSAGES[order.status] ?? order.status_label}</Text>
+      {order.status === "out_for_delivery" && order.driver_name ? (
+        <Text style={styles.driverLine}>{order.driver_name} is delivering your order.</Text>
+      ) : null}
 
       <View style={styles.savingsCard}>
         <View style={styles.savingsCheck}>
@@ -134,6 +158,17 @@ const styles = StyleSheet.create({
   errorText: { color: COLORS.danger, fontWeight: "600" },
   restaurantName: { fontSize: 20, fontWeight: "800", color: COLORS.text },
   message: { fontSize: 14, color: COLORS.textMuted, marginTop: 4, marginBottom: SPACING.md, fontWeight: "600" },
+  driverLine: { fontSize: 13, color: BRAND.deepGreen, fontWeight: "700", marginTop: -SPACING.sm, marginBottom: SPACING.md },
+  rejectedCard: {
+    backgroundColor: "rgba(214,40,40,0.08)",
+    borderRadius: RADII.lg,
+    borderWidth: 1,
+    borderColor: "rgba(214,40,40,0.25)",
+    padding: SPACING.lg,
+    marginTop: SPACING.md,
+  },
+  rejectedTitle: { fontSize: 16, fontWeight: "800", color: BRAND.njRed, marginBottom: 6 },
+  rejectedBody: { fontSize: 13.5, color: COLORS.textMuted, lineHeight: 19 },
   savingsCard: {
     flexDirection: "row",
     alignItems: "center",

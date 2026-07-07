@@ -82,6 +82,9 @@ export default function RootLayout() {
             name="order/[id]"
             options={{ title: "Order Status", headerBackVisible: false }}
           />
+          <Stack.Screen name="staff" options={{ title: "Operations" }} />
+          <Stack.Screen name="merchant/index" options={{ title: "Restaurant" }} />
+          <Stack.Screen name="driver/index" options={{ title: "Driver" }} />
         </Stack>
         {!brandDone && <BrandLoadingScreen />}
       </CartProvider>

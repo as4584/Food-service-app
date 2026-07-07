@@ -118,6 +118,11 @@ export default function RestaurantListScreen() {
               onPress={() => router.push(`/restaurant/${item.id}`)}
             />
           )}
+          ListFooterComponent={
+            <Pressable style={styles.staffLink} onPress={() => router.push("/staff")}>
+              <Text style={styles.staffLinkText}>Restaurant &amp; Driver view</Text>
+            </Pressable>
+          }
         />
       )}
     </View>
@@ -193,4 +198,6 @@ const styles = StyleSheet.create({
     marginLeft: SPACING.sm,
   },
   spinPillText: { color: "#FFFFFF", fontFamily: FONTS.bodyExtraBold, fontSize: 13 },
+  staffLink: { alignItems: "center", paddingVertical: SPACING.lg, marginTop: SPACING.xs },
+  staffLinkText: { fontSize: 13, color: COLORS.textSoft, fontFamily: FONTS.bodySemiBold, textDecorationLine: "underline" },
 });
