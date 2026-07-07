@@ -1,13 +1,16 @@
 import uuid
 
-from sqlalchemy import Column, String, Numeric, Integer, ForeignKey, Uuid, Index
+from sqlalchemy import Column, String, Numeric, Integer, ForeignKey, Uuid, Index, DateTime
 
 from app.models.base import Base, TimestampMixin
 
 
 class Order(Base, TimestampMixin):
     __tablename__ = "orders"
-    __table_args__ = (Index("ix_orders_created_at", "created_at"),)
+    __table_args__ = (
+        Index("ix_orders_created_at", "created_at"),
+        Index("ix_orders_status", "status"),
+    )
 
     id = Column(Uuid, primary_key=True, default=uuid.uuid4)
     restaurant_id = Column(Uuid, ForeignKey("restaurants.id"), nullable=False)
@@ -17,6 +20,17 @@ class Order(Base, TimestampMixin):
     tax = Column(Numeric(10, 2), nullable=False)
     delivery_fee = Column(Numeric(10, 2), nullable=False, default="3.99")
     total = Column(Numeric(10, 2), nullable=False)
+
+    # Real, authoritative lifecycle state — driven by merchant + driver actions.
+    # One of app.services.order_lifecycle.OrderStatus values.
+    status = Column(String(30), nullable=False, default="pending")
+    driver_name = Column(String(120), nullable=True)
+    rejected_reason = Column(String(200), nullable=True)
+    # Audit trail — when each stage began.
+    accepted_at = Column(DateTime, nullable=True)
+    ready_at = Column(DateTime, nullable=True)
+    out_for_delivery_at = Column(DateTime, nullable=True)
+    delivered_at = Column(DateTime, nullable=True)
 
 
 class OrderItem(Base):
