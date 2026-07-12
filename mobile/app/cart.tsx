@@ -1,7 +1,8 @@
 import { useRouter } from "expo-router";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useCart } from "../context/CartContext";
-import { COLORS, RADII, SPACING } from "../theme/tokens";
+import { COLORS, FONTS, GRADIENTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
 
 const NJ_SALES_TAX = 0.06625;
 const DELIVERY_FEE = 3.99;
@@ -81,8 +82,18 @@ export default function CartScreen() {
           <Text style={styles.totalValue}>${total.toFixed(2)}</Text>
         </View>
 
-        <Pressable style={styles.checkoutBtn} onPress={() => router.push("/checkout")}>
-          <Text style={styles.checkoutBtnText}>Proceed to Checkout</Text>
+        <Pressable
+          style={({ pressed }) => [styles.checkoutBtnWrap, pressed && styles.pressedShrink]}
+          onPress={() => router.push("/checkout")}
+        >
+          <LinearGradient
+            colors={GRADIENTS.primaryButton}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.checkoutBtn}
+          >
+            <Text style={styles.checkoutBtnText}>Proceed to Checkout</Text>
+          </LinearGradient>
         </Pressable>
       </View>
     </View>
@@ -98,17 +109,18 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bg,
     padding: SPACING.lg,
   },
-  emptyText: { fontSize: 16, color: COLORS.textMuted, marginBottom: SPACING.lg },
+  emptyText: { fontSize: 16, color: COLORS.textMuted, marginBottom: SPACING.lg, fontFamily: FONTS.bodyMedium },
   emptyBtn: {
     backgroundColor: COLORS.primary,
     paddingVertical: SPACING.md,
     paddingHorizontal: SPACING.xl,
     borderRadius: RADII.pill,
+    ...SHADOWS.button,
   },
-  emptyBtnText: { color: "#FFFFFF", fontWeight: "700" },
+  emptyBtnText: { color: "#FFFFFF", fontFamily: FONTS.bodyBold },
   restaurantName: {
     fontSize: 18,
-    fontWeight: "800",
+    fontFamily: FONTS.display,
     color: COLORS.text,
     padding: SPACING.lg,
     paddingBottom: 0,
@@ -121,12 +133,11 @@ const styles = StyleSheet.create({
     borderRadius: RADII.md,
     padding: SPACING.md,
     marginBottom: SPACING.sm,
-    borderWidth: 1,
-    borderColor: COLORS.border,
+    ...SHADOWS.card,
   },
   rowInfo: { flex: 1 },
-  itemName: { fontSize: 14, fontWeight: "700", color: COLORS.text },
-  itemPrice: { fontSize: 12, color: COLORS.textMuted, marginTop: 2 },
+  itemName: { fontSize: 14, fontFamily: FONTS.bodyBold, color: COLORS.text },
+  itemPrice: { fontSize: 12, color: COLORS.textMuted, marginTop: 2, fontFamily: FONTS.body },
   stepper: { flexDirection: "row", alignItems: "center", marginHorizontal: SPACING.sm },
   stepBtn: {
     width: 26,
@@ -138,9 +149,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  stepBtnText: { fontSize: 15, fontWeight: "700", color: COLORS.text, lineHeight: 17 },
-  qty: { width: 22, textAlign: "center", fontWeight: "700", color: COLORS.text },
-  lineTotal: { fontSize: 14, fontWeight: "800", color: COLORS.text, width: 56, textAlign: "right" },
+  stepBtnText: { fontSize: 15, fontFamily: FONTS.bodyBold, color: COLORS.text, lineHeight: 17 },
+  qty: { width: 22, textAlign: "center", fontFamily: FONTS.bodyBold, color: COLORS.text },
+  lineTotal: { fontSize: 14, fontFamily: FONTS.bodyBold, color: COLORS.text, width: 56, textAlign: "right" },
   summary: {
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
@@ -148,17 +159,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.bgElevated,
   },
   summaryRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 6 },
-  summaryLabel: { fontSize: 13, color: COLORS.textMuted },
-  summaryValue: { fontSize: 13, color: COLORS.text, fontWeight: "600" },
+  summaryLabel: { fontSize: 13, color: COLORS.textMuted, fontFamily: FONTS.body },
+  summaryValue: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.bodySemiBold },
   totalRow: { marginTop: 4, paddingTop: SPACING.sm, borderTopWidth: 1, borderTopColor: COLORS.border },
-  totalLabel: { fontSize: 16, fontWeight: "800", color: COLORS.text },
-  totalValue: { fontSize: 16, fontWeight: "800", color: COLORS.primary },
+  totalLabel: { fontSize: 16, fontFamily: FONTS.bodyBold, color: COLORS.text },
+  totalValue: { fontSize: 16, fontFamily: FONTS.bodyBold, color: COLORS.primary },
+  checkoutBtnWrap: { marginTop: SPACING.md, borderRadius: RADII.pill, ...SHADOWS.button },
+  pressedShrink: { transform: [{ scale: 0.98 }] },
   checkoutBtn: {
-    backgroundColor: COLORS.primary,
     borderRadius: RADII.pill,
     paddingVertical: SPACING.md,
     alignItems: "center",
-    marginTop: SPACING.md,
   },
-  checkoutBtnText: { color: "#FFFFFF", fontWeight: "800", fontSize: 16 },
+  checkoutBtnText: { color: "#FFFFFF", fontFamily: FONTS.bodyExtraBold, fontSize: 16 },
 });

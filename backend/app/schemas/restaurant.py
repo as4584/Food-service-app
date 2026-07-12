@@ -28,6 +28,8 @@ class RestaurantListItem(BaseModel):
     cuisine: str
     image_emoji: Optional[str] = None
     image_url: Optional[str] = None
+    website_url: Optional[str] = None
+    category: Optional[str] = None
     rating: Decimal
     eta_minutes: int
     price_range: str

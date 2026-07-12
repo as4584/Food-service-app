@@ -4,13 +4,20 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { getOrder, OrderResponse, ApiError } from "../../services/api";
 import { StatusStepper } from "../../components/StatusStepper";
 import { DeliveryMap } from "../../components/DeliveryMap";
-import { COLORS, RADII, SPACING } from "../../theme/tokens";
+import { BRAND, COLORS, RADII, SPACING } from "../../theme/tokens";
 
-const STAGE_MESSAGES: Record<string, string> = {
-  placed: "Your order has been sent to the restaurant.",
+// Illustrative marketplace commission (DoorDash/Uber Eats/Grubhub run 15–30%);
+// used to show the owner how much of each order stays with the restaurant.
+const MARKETPLACE_COMMISSION = 0.3;
+
+const STATUS_MESSAGES: Record<string, string> = {
+  pending: "Your order has been sent to the restaurant.",
+  accepted: "The restaurant accepted your order.",
   preparing: "The kitchen is preparing your order.",
+  ready: "Your order is packed and ready for a driver.",
   out_for_delivery: "Your order is on its way!",
-  delivered: "Enjoy your Jersey Shore meal! 🌊",
+  delivered: "Enjoy your meal — thanks for ordering local!",
+  rejected: "The restaurant couldn't take this order.",
 };
 
 export default function OrderStatusScreen() {
@@ -59,10 +66,46 @@ export default function OrderStatusScreen() {
     );
   }
 
+  if (order.rejected) {
+    return (
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.restaurantName}>{order.restaurant_name}</Text>
+        <View style={styles.rejectedCard}>
+          <Text style={styles.rejectedTitle}>Order declined</Text>
+          <Text style={styles.rejectedBody}>
+            {order.rejected_reason ||
+              "The restaurant can't take this order right now. You haven't been charged."}
+          </Text>
+        </View>
+        <Pressable style={styles.againBtn} onPress={() => router.replace("/")}>
+          <Text style={styles.againBtnText}>Find another spot</Text>
+        </Pressable>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.content}>
       <Text style={styles.restaurantName}>{order.restaurant_name}</Text>
-      <Text style={styles.message}>{STAGE_MESSAGES[order.stage]}</Text>
+      <Text style={styles.message}>{STATUS_MESSAGES[order.status] ?? order.status_label}</Text>
+      {order.status === "out_for_delivery" && order.driver_name ? (
+        <Text style={styles.driverLine}>{order.driver_name} is delivering your order.</Text>
+      ) : null}
+
+      <View style={styles.savingsCard}>
+        <View style={styles.savingsCheck}>
+          <Text style={styles.savingsCheckMark}>✓</Text>
+        </View>
+        <View style={styles.savingsTextWrap}>
+          <Text style={styles.savingsTitle}>You ordered direct</Text>
+          <Text style={styles.savingsBody}>
+            <Text style={styles.savingsAmount}>
+              ${(Number(order.subtotal) * MARKETPLACE_COMMISSION).toFixed(2)}
+            </Text>{" "}
+            of this order stays with {order.restaurant_name} — not a delivery app.
+          </Text>
+        </View>
+      </View>
 
       <View style={styles.mapCard}>
         <DeliveryMap
@@ -114,7 +157,42 @@ const styles = StyleSheet.create({
   center: { flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.bg, padding: SPACING.lg },
   errorText: { color: COLORS.danger, fontWeight: "600" },
   restaurantName: { fontSize: 20, fontWeight: "800", color: COLORS.text },
-  message: { fontSize: 14, color: COLORS.textMuted, marginTop: 4, marginBottom: SPACING.lg, fontWeight: "600" },
+  message: { fontSize: 14, color: COLORS.textMuted, marginTop: 4, marginBottom: SPACING.md, fontWeight: "600" },
+  driverLine: { fontSize: 13, color: BRAND.deepGreen, fontWeight: "700", marginTop: -SPACING.sm, marginBottom: SPACING.md },
+  rejectedCard: {
+    backgroundColor: "rgba(214,40,40,0.08)",
+    borderRadius: RADII.lg,
+    borderWidth: 1,
+    borderColor: "rgba(214,40,40,0.25)",
+    padding: SPACING.lg,
+    marginTop: SPACING.md,
+  },
+  rejectedTitle: { fontSize: 16, fontWeight: "800", color: BRAND.njRed, marginBottom: 6 },
+  rejectedBody: { fontSize: 13.5, color: COLORS.textMuted, lineHeight: 19 },
+  savingsCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.primarySoft,
+    borderRadius: RADII.md,
+    borderWidth: 1,
+    borderColor: "rgba(15,61,46,0.14)",
+    padding: SPACING.md,
+    marginBottom: SPACING.lg,
+  },
+  savingsCheck: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: BRAND.deepGreen,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: SPACING.sm,
+  },
+  savingsCheckMark: { color: BRAND.cream, fontSize: 18, fontWeight: "800", lineHeight: 21 },
+  savingsTextWrap: { flex: 1 },
+  savingsTitle: { fontSize: 14, fontWeight: "800", color: BRAND.deepGreen, marginBottom: 2 },
+  savingsBody: { fontSize: 12.5, color: COLORS.textMuted, lineHeight: 17 },
+  savingsAmount: { color: BRAND.njRed, fontWeight: "800" },
   mapCard: {
     backgroundColor: COLORS.card,
     borderRadius: RADII.lg,

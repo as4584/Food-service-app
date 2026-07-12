@@ -5,7 +5,7 @@
  * All endpoints go through /api/v1/. No auth — demo customer flow only.
  */
 const API_BASE_URL =
-  process.env.EXPO_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
+  process.env.EXPO_PUBLIC_API_BASE_URL || "http://localhost:8001/api/v1";
 
 export class ApiError extends Error {
   status: number;
@@ -70,6 +70,8 @@ export interface RestaurantListItem {
   cuisine: string;
   image_emoji: string | null;
   image_url: string | null;
+  website_url: string | null;
+  category: string | null;
   rating: string;
   eta_minutes: number;
   price_range: string;
@@ -107,6 +109,16 @@ export interface CreateOrderPayload {
 
 export type OrderStage = "placed" | "preparing" | "out_for_delivery" | "delivered";
 
+// Real, authoritative lifecycle status (backend services.order_lifecycle).
+export type OrderStatus =
+  | "pending"
+  | "accepted"
+  | "preparing"
+  | "ready"
+  | "out_for_delivery"
+  | "delivered"
+  | "rejected";
+
 export interface OrderResponse {
   id: string;
   restaurant_id: string;
@@ -128,12 +140,19 @@ export interface OrderResponse {
     line_total: string;
   }[];
   created_at: string;
+  // legacy 4-step tracker
   stage: OrderStage;
   stage_index: number;
   stage_count: number;
   progress_in_stage: number;
   seconds_elapsed: number;
   is_delivered: boolean;
+  // real lifecycle
+  status: OrderStatus;
+  status_label: string;
+  rejected: boolean;
+  rejected_reason: string | null;
+  driver_name: string | null;
 }
 
 export async function createOrder(payload: CreateOrderPayload): Promise<OrderResponse> {
@@ -146,6 +165,53 @@ export async function createOrder(payload: CreateOrderPayload): Promise<OrderRes
 export async function getOrder(id: string): Promise<OrderResponse> {
   return request<OrderResponse>(`/orders/${id}`);
 }
+
+// ─── Ops: merchant + driver dashboards ───────────────────────────────────────
+
+export interface ListOrdersParams {
+  restaurantId?: string;
+  status?: OrderStatus | OrderStatus[];
+  driverName?: string;
+  activeOnly?: boolean;
+  limit?: number;
+}
+
+export async function listOrders(params: ListOrdersParams = {}): Promise<OrderResponse[]> {
+  const qs = new URLSearchParams();
+  if (params.restaurantId) qs.append("restaurant_id", params.restaurantId);
+  if (params.driverName) qs.append("driver_name", params.driverName);
+  if (params.activeOnly) qs.append("active_only", "true");
+  if (params.limit) qs.append("limit", String(params.limit));
+  if (params.status) {
+    const statuses = Array.isArray(params.status) ? params.status : [params.status];
+    statuses.forEach((s) => qs.append("status", s));
+  }
+  const q = qs.toString();
+  return request<OrderResponse[]>(`/orders${q ? `?${q}` : ""}`);
+}
+
+// Merchant actions
+export const acceptOrder = (id: string) =>
+  request<OrderResponse>(`/orders/${id}/accept`, { method: "POST" });
+
+export const rejectOrder = (id: string, reason?: string) =>
+  request<OrderResponse>(`/orders/${id}/reject`, {
+    method: "POST",
+    body: JSON.stringify({ reason: reason ?? null }),
+  });
+
+export const markOrderReady = (id: string) =>
+  request<OrderResponse>(`/orders/${id}/ready`, { method: "POST" });
+
+// Driver actions
+export const pickupOrder = (id: string, driverName: string) =>
+  request<OrderResponse>(`/orders/${id}/pickup`, {
+    method: "POST",
+    body: JSON.stringify({ driver_name: driverName }),
+  });
+
+export const deliverOrder = (id: string) =>
+  request<OrderResponse>(`/orders/${id}/deliver`, { method: "POST" });
 
 export async function healthCheck(): Promise<{ status: string; version: string }> {
   return request("/health");

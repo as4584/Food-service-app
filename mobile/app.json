@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Shore Eats",
+    "name": "NJ Eats",
     "slug": "shore-eats",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,14 +9,22 @@
     "scheme": "shoreeats",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.shoreeats.app"
+      "bundleIdentifier": "com.shoreeats.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "NJ Eats uses your location to show nearby restaurants and estimate delivery distance and time.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FDF6E9"
+        "backgroundColor": "#F7F3EC"
       },
-      "package": "com.shoreeats.app"
+      "package": "com.shoreeats.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png",
@@ -29,7 +37,15 @@
         {
           "image": "./assets/splash-icon.png",
           "resizeMode": "contain",
-          "backgroundColor": "#FDF6E9"
+          "backgroundColor": "#F7F3EC"
+        }
+      ],
+      "expo-font",
+      "expo-audio",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "NJ Eats uses your location to show nearby restaurants and estimate delivery distance and time."
         }
       ]
     ],

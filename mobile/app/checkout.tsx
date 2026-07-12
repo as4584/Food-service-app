@@ -9,9 +9,12 @@ import {
   View,
   Pressable,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useCart } from "../context/CartContext";
+import { useUserLocation } from "../context/LocationContext";
+import { haversineMiles, formatMiles } from "../utils/distance";
 import { createOrder, ApiError } from "../services/api";
-import { COLORS, RADII, SPACING } from "../theme/tokens";
+import { COLORS, FONTS, GRADIENTS, RADII, SHADOWS, SPACING } from "../theme/tokens";
 
 const NJ_SALES_TAX = 0.06625;
 const DELIVERY_FEE = 3.99;
@@ -19,13 +22,20 @@ const DELIVERY_FEE = 3.99;
 export default function CheckoutScreen() {
   const router = useRouter();
   const cart = useCart();
+  const { coords } = useUserLocation();
   const [customerName, setCustomerName] = useState("Demo Guest");
-  const [address, setAddress] = useState("400 Ocean Ave, Point Pleasant Beach, NJ");
+  const [address, setAddress] = useState("1200 Main Ave, Clifton, NJ");
   const [placing, setPlacing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const tax = cart.subtotal * NJ_SALES_TAX;
   const total = cart.subtotal + tax + DELIVERY_FEE;
+
+  const rc = cart.restaurantCoords;
+  const distanceMi =
+    coords && rc && rc.lat != null && rc.lng != null
+      ? haversineMiles(coords.latitude, coords.longitude, rc.lat, rc.lng)
+      : null;
 
   const handlePlaceOrder = async () => {
     if (!cart.restaurantId || cart.lines.length === 0) return;
@@ -69,7 +79,12 @@ export default function CheckoutScreen() {
       />
 
       <View style={styles.summaryCard}>
-        <Text style={styles.summaryTitle}>{cart.restaurantName}</Text>
+        <View style={styles.summaryHeader}>
+          <Text style={styles.summaryTitle}>{cart.restaurantName}</Text>
+          {distanceMi != null ? (
+            <Text style={styles.summaryDistance}>📍 {formatMiles(distanceMi)} away</Text>
+          ) : null}
+        </View>
         {cart.lines.map((l) => (
           <View key={l.menuItem.id} style={styles.summaryRow}>
             <Text style={styles.summaryItemName}>
@@ -101,15 +116,22 @@ export default function CheckoutScreen() {
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <Pressable
-        style={[styles.placeBtn, placing && styles.placeBtnDisabled]}
+        style={[styles.placeBtnWrap, placing && styles.placeBtnDisabled]}
         onPress={handlePlaceOrder}
         disabled={placing}
       >
-        {placing ? (
-          <ActivityIndicator color="#FFFFFF" />
-        ) : (
-          <Text style={styles.placeBtnText}>Place Order</Text>
-        )}
+        <LinearGradient
+          colors={GRADIENTS.primaryButton}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.placeBtn}
+        >
+          {placing ? (
+            <ActivityIndicator color="#FFFFFF" />
+          ) : (
+            <Text style={styles.placeBtnText}>Place Order</Text>
+          )}
+        </LinearGradient>
       </Pressable>
     </ScrollView>
   );
@@ -118,7 +140,7 @@ export default function CheckoutScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bg },
   content: { padding: SPACING.lg, paddingBottom: SPACING.xl },
-  label: { fontSize: 13, fontWeight: "700", color: COLORS.textMuted, marginBottom: 6, marginTop: SPACING.md },
+  label: { fontSize: 13, fontFamily: FONTS.bodyBold, color: COLORS.textMuted, marginBottom: 6, marginTop: SPACING.md },
   input: {
     backgroundColor: COLORS.card,
     borderRadius: RADII.md,
@@ -127,32 +149,33 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
     fontSize: 15,
     color: COLORS.text,
+    fontFamily: FONTS.body,
   },
   summaryCard: {
     backgroundColor: COLORS.card,
     borderRadius: RADII.lg,
-    borderWidth: 1,
-    borderColor: COLORS.border,
     padding: SPACING.md,
     marginTop: SPACING.lg,
+    ...SHADOWS.card,
   },
-  summaryTitle: { fontSize: 15, fontWeight: "800", color: COLORS.text, marginBottom: SPACING.sm },
+  summaryHeader: { marginBottom: SPACING.sm },
+  summaryTitle: { fontSize: 15, fontFamily: FONTS.display, color: COLORS.text },
+  summaryDistance: { fontSize: 12.5, color: COLORS.textMuted, fontFamily: FONTS.bodySemiBold, marginTop: 2 },
   summaryRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 4 },
-  summaryItemName: { fontSize: 13, color: COLORS.textMuted, flex: 1 },
-  summaryItemPrice: { fontSize: 13, color: COLORS.text, fontWeight: "600" },
+  summaryItemName: { fontSize: 13, color: COLORS.textMuted, flex: 1, fontFamily: FONTS.body },
+  summaryItemPrice: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.bodySemiBold },
   divider: { marginTop: 8, paddingTop: 8, borderTopWidth: 1, borderTopColor: COLORS.border },
-  summaryLabel: { fontSize: 13, color: COLORS.textMuted },
-  summaryValue: { fontSize: 13, color: COLORS.text, fontWeight: "600" },
-  totalLabel: { fontSize: 15, fontWeight: "800", color: COLORS.text, marginTop: 4 },
-  totalValue: { fontSize: 15, fontWeight: "800", color: COLORS.primary, marginTop: 4 },
-  error: { color: COLORS.danger, marginTop: SPACING.md, fontWeight: "600" },
+  summaryLabel: { fontSize: 13, color: COLORS.textMuted, fontFamily: FONTS.body },
+  summaryValue: { fontSize: 13, color: COLORS.text, fontFamily: FONTS.bodySemiBold },
+  totalLabel: { fontSize: 15, fontFamily: FONTS.bodyBold, color: COLORS.text, marginTop: 4 },
+  totalValue: { fontSize: 15, fontFamily: FONTS.bodyBold, color: COLORS.primary, marginTop: 4 },
+  error: { color: COLORS.danger, marginTop: SPACING.md, fontFamily: FONTS.bodySemiBold },
+  placeBtnWrap: { borderRadius: RADII.pill, marginTop: SPACING.lg, ...SHADOWS.button },
   placeBtn: {
-    backgroundColor: COLORS.primary,
     borderRadius: RADII.pill,
     paddingVertical: SPACING.md,
     alignItems: "center",
-    marginTop: SPACING.lg,
   },
   placeBtnDisabled: { opacity: 0.7 },
-  placeBtnText: { color: "#FFFFFF", fontWeight: "800", fontSize: 16 },
+  placeBtnText: { color: "#FFFFFF", fontFamily: FONTS.bodyExtraBold, fontSize: 16 },
 });
