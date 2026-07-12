@@ -76,19 +76,17 @@ The near-term goal is narrow on purpose: prove the core ordering experience is g
 
 ## Live Demo
 
-Scan this in the **Expo Go** app to open the current build directly on your phone:
+The app is deployed **always-on** at:
 
-![Scan in Expo Go](docs/demo-qr.png)
+**https://njeats.lexmakesit.com/**
 
-This only works while the development machine and its tunnel are actually running — it is not a hosted, always-on link. As of **2026-07-11** it points to the stable Expo tunnel subdomain:
+Open it in any mobile browser (or scan the QR below) — no Expo Go, no App Store, no developer machine required. On iOS, tap Share → *Add to Home Screen* to install it like a native app.
 
-```
-exp://h0asava-lexmakesit-8082.exp.direct
-```
+![Scan for the live demo](docs/demo-qr.png)
 
-Start it with `expo start --tunnel --port 8082` from `mobile/`. Unlike a Cloudflare Quick Tunnel (random URL every launch), this `exp.direct` subdomain is derived from `mobile/.expo/settings.json` (`urlRandomness`) and stays the same across restarts, so the QR above doesn't need regenerating when the tunnel is bounced.
+As of **2026-07-11** this runs on a DigitalOcean droplet: the FastAPI backend in a Docker container (SQLite, auto-restart) behind Caddy, which serves the Expo **web** export at the domain root and reverse-proxies `/api/*` to the backend. Because it's hosted, it stays up regardless of whether any local machine is running.
 
-This section will be updated (or removed) as the demo setup changes.
+> Note: this is the **web** build. Camera/native-only bits (e.g. haptics) are no-ops in a browser, but the full browse → cart → checkout → order-tracking → spin-wheel flow works. For local development against the Expo dev server, run `expo start --port 8082` from `mobile/`.
 
 ---
 
