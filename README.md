@@ -80,11 +80,13 @@ Scan this in the **Expo Go** app to open the current build directly on your phon
 
 ![Scan in Expo Go](docs/demo-qr.png)
 
-This only works while the development machine and its tunnel are actually running — it is not a hosted, always-on link. As of **2026-07-04** it points to:
+This only works while the development machine and its tunnel are actually running — it is not a hosted, always-on link. As of **2026-07-11** it points to the stable Expo tunnel subdomain:
 
 ```
-exp://many-solutions-balloon-headed.trycloudflare.com
+exp://h0asava-lexmakesit-8082.exp.direct
 ```
+
+Start it with `expo start --tunnel --port 8082` from `mobile/`. Unlike a Cloudflare Quick Tunnel (random URL every launch), this `exp.direct` subdomain is derived from `mobile/.expo/settings.json` (`urlRandomness`) and stays the same across restarts, so the QR above doesn't need regenerating when the tunnel is bounced.
 
 This section will be updated (or removed) as the demo setup changes.
 
